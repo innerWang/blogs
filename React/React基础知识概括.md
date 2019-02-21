@@ -21,7 +21,7 @@
 * 组件可通过函数或者class来定义，当组件有自身的内部状态时，使用class，此时使用constructor时，一定要调用`super()`
 <br>
 
-#### 2. 组件通信
+#### 2. 组件通信 <a href='#目录'>返回目录</a>
 ##### 2.1 父子通信
 * 父组件传递数据给子组件时，在调用子组件的地方将数据作为属性的值传入，子组件即可通过`props.属性`获取到数据
 ```javascript
@@ -31,7 +31,7 @@
 ```
 * 子组件传递数据给父组件时，需要父组件事先定义一个函数，并通过props传给子组件，子组件在特定时机调用此函数，函数的传入参数即可作为传入的数据
 
-##### 2.2 任意组件通信
+##### 2.2 任意组件通信 
 ###### 2.2.1 使用EventHub
   * 即为发布订阅模式，使用trigger触发一个事件并传递数据，使用on监听事件并获取数据
   * 一个组件监听某个事件，另一组件触发相同事件并传参，即可实现两个组件的通信
@@ -61,7 +61,7 @@
   //eventHub.trigger('我要花钱',100)
   ```
 
-###### 2.2.2 使用Redux  <a href='#'>返回目录</a>
+###### 2.2.2 使用Redux  <a href='#目录'>返回目录</a>
   * 根据定义的reducer方法创建store,reducer方法为纯函数，根据原先的state以及接收到的action返回新的state
   * 子组件的操作派发(调用`store.dispatch()`)一个action对象(包含type以及其他数据)
   * reducer利用接收的action以及旧的state按照预先定义的规则更新store中的state
@@ -83,21 +83,21 @@
   ```
 <br>
 
-#### 3. Redux
+#### 3. Redux <a href='#目录'>返回目录</a>
 
 <br>
 
-#### 4. React Context API
+#### 4. React Context API <a href='#目录'>返回目录</a>
 
 <br>
 
-#### 5. React Hooks API
+#### 5. React Hooks API <a href='#目录'>返回目录</a>
 <br>
 
-#### 6. React Router
+#### 6. React Router <a href='#目录'>返回目录</a>
 <br>
 
-#### 7. React生命周期
+#### 7. React生命周期 <a href='#目录'>返回目录</a>
 <br>
 
 #### 8. React的CSS-in-JS方案
