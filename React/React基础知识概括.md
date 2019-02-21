@@ -12,7 +12,7 @@
 9. [React环境搭建](#9-React环境搭建)
 <br><br>
 
-#### 1. React组件
+#### 1. React组件 
 * JSX语法：扩展的JS语法，可使用JSX语法在JS中编写类似HTML结构的代码
 * React的组件名称首字母必须大写
 * React中类的方法默认不绑定`this`，可使用`bind`或`箭头函数`手动绑定
@@ -61,7 +61,7 @@
   //eventHub.trigger('我要花钱',100)
   ```
 
-###### 2.2.2 使用Redux
+###### 2.2.2 使用Redux  <a href='#'>返回目录</a>
   * 根据定义的reducer方法创建store,reducer方法为纯函数，根据原先的state以及接收到的action返回新的state
   * 子组件的操作派发(调用`store.dispatch()`)一个action对象(包含type以及其他数据)
   * reducer利用接收的action以及旧的state按照预先定义的规则更新store中的state
