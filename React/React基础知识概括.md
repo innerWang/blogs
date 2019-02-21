@@ -131,17 +131,17 @@
 * 由于整个应用只有一个 State 对象，对于大型应用而言，这个 State 必然十分庞大，导致负责生成 State 的Reducer函数也十分庞大。我们可以把Reducer 函数进行拆分，不同函数负责处理不同属性，最终合并为一个大的Reducer即可
 * Reducer提供了一个`combineReducer`方法，用于合并多个子组件所对应的 Reducer。
 ```
-import {createStore, combineReducers} from 'redux';
-import {reducer as todoReducer} from './todos';
-import {reducer as filterReducer} from './filter';
+  import {createStore, combineReducers} from 'redux';
+  import {reducer as todoReducer} from './todos';
+  import {reducer as filterReducer} from './filter';
 
-//todos 以及 filter 分别为 state 的属性名
-const reducer = combineReducers({
-  todos: todoReducer,
-  filter: filterReducer
-});
+  //todos 以及 filter 分别为 state 的属性名
+  const reducer = combineReducers({
+    todos: todoReducer,
+    filter: filterReducer
+  });
 
-export default createStore(reducer);
+  export default createStore(reducer);
 ```
 
 <br>[top](#目录)<hr>
@@ -177,8 +177,8 @@ export default createStore(reducer);
 React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect接受两个参数 mapStateToProps 以及 mapDispatchToProps，其执行结果仍是一个函数，此时将UI组件Counter作为参数传入，得到的结果即为容器组件 CounterContainer。
 
 ```
-import { connect } from 'react-redux'
-const CounterContainer = connect(mapStateToProps,mapDispatchToProps)(Counter);
+  import { connect } from 'react-redux'
+  const CounterContainer = connect(mapStateToProps,mapDispatchToProps)(Counter);
 ```
 作为容器组件，要做以下两件事情：
 * 将外部的数据(即 state 对象)转化为内层UI组件的props
@@ -191,47 +191,47 @@ const CounterContainer = connect(mapStateToProps,mapDispatchToProps)(Counter);
 * mapStateToProps 的第一个参数始终是state，还可以使用第二个参数`ownProps`，代表直接传递给容器组件的 props 对象，需要注意的是，若使用了`ownProps`作为参数，如果容器组件的参数发送变化，也会引起 UI 组件的重新渲染。
 * connect 方法可以省略 mapStateToProps 参数，这样UI组件就不会订阅 Store，当Store发生更新时不会引起UI组件的更新。
 ```
-const mapStateToProps = (state)=>{
-  return {
-    todos : selectTodos(state.todos,state.filter)
+  const mapStateToProps = (state)=>{
+    return {
+      todos : selectTodos(state.todos,state.filter)
+    }
   }
-}
 ```
 
 ###### 10.2.2 **mapDispatchToProps**
 * mapDispatchToProps 用于把 UI 组件暴露出来的函数类型的prop关联上 `dispatch`函数的调用,它可以是一个函数，也可以是一个对象。
 * mapDispatchToProps 是函数时，包含两个参数，分别为 dispatch(必须) 以及 ownProps。
 ```
-function mapDispatchToProps(dispatch){
-  return {
-    add1: ()=>{
-      dispatch({type:'add',payload:1}) 
-    },
-    add2: ()=>{
-      dispatch({type:'add',payload:2}) 
+  function mapDispatchToProps(dispatch){
+    return {
+      add1: ()=>{
+        dispatch({type:'add',payload:1}) 
+      },
+      add2: ()=>{
+        dispatch({type:'add',payload:2}) 
+      }
     }
   }
-}
 ```
 
 * mapDispatchToProps 是对象时，它的每个键名是对应 UI组件的同名参数，键值是一个函数,返回的Action会由Redux自动发出。
 ```
-const mapDispatchToProps= {
-     add1: ()=>{
-       return {type:'add',payload:1}
-     }
-}
+  const mapDispatchToProps= {
+       add1: ()=>{
+         return {type:'add',payload:1}
+       }
+  }
 ```
 
 
 ##### 10.3 Provider
 * React-Redux 提供 Provider 组件，可以让容器组件拿到 state 。
 ```
-ReactDOM.render(
-  <Provider store={store}>
-    <TodoApp />
-  </Provider>, 
-  document.getElementById('root'));
+  ReactDOM.render(
+    <Provider store={store}>
+      <TodoApp />
+    </Provider>, 
+    document.getElementById('root'));
 ```
 
 　上述代码中，使用 Provider 在根组件 TodoApp 外面包了一层，这样 TodoApp 的所有子组件默认都可以拿到 state 了。
@@ -254,14 +254,93 @@ ReactDOM.render(
  Redux 的单向数据流是同步操作，用户操作派发一个 action 对象后，reducer 会根据旧的 state 以及接收到的 action 生成新的 state，然后会即刻引发组件的渲染更新，这其中并没有执行异步操作的机会，Redux 提供了 thunk 的解决方案，可以使得 Reducer 在异步操作结束后自动执行。
 
 ###### 11.2.1 **redux-thunk 中间件**
+* redux-thunk 提供一个 Redux 中间件，我们需要在创建 Store 时用上这个中间件。在 action 对象派发后，调用 reducer 函数之前，会先经历一个中间件环节，此时即为产生异步操作的机会。
+![Redux的action处理流程](./images/Redux的action处理流程.png)
+
+```
+  npm install --save redux-thunk  //redux-thunk是一个独立的发布包，需要单独安装
+```
+
+###### 11.2.2 **使用中间件**
+```
+  // Store.js
+  import { applyMiddleware, createStore } from 'redux';
+  import thunkMiddleware from "redux-thunk";
+
+  //如果还需要使用什么中间件，直接push到middlewares中即可
+  const middlewares = [thunkMiddleware];
+
+  export default createStore(reducer, {},  applyMiddleware(...middlewares));
+```
+
+*  `applyMiddleware` 是 Redux 的原生方法，作用是将所有中间件组成一个数组，依次执行。
 
 
+###### 11.2.3 **异步 action 对象**
+* 异步 action 对象不是一个普通的JS对象，而是一个函数。
+* redux-thunk的工作是检查 action 对象是否为函数，如不是则直接放行，完成普通 action 对象的生命周期 ，若是 ，则会执行该函数 ，并把 Store 的dispatch 函数和 getStatus 函数作为参数传递到函数中去。 不会让这个异步action对象继续往前派发到reducer函数。
+```
+  const increment = ()=>({
+    type: 'add',
+    payload: 1
+  }); 
 
-###### 11.2.2 **异步 action 对象**
+  // 异步action构造函数
+  const incrementAsync = ()=>{
+    return (dispatch) => {
+      setTimeout(()=>{
+        dispatch(increment());
+      },1000);
+    }
+  }
+  
+  //通过dispatch派发异步 actionCreator
+  const mapDispatchToProps = (dispatch) => {
+    return {
+      onClick: () => {
+        dispatch(incrementAsync());
+      }
+    }
+  }; 
 
+```
+上述示例中，异步action构造函数返回一个新的函数，当这个函数被dispatch派发后，会被redux-thunk执行，于是setTimeout发挥作用，在1s之后利用参数dispatch派发出同步action构造函数increment的结果。
 
+###### 11.2.4 **异步操作模式**
 
+* 同步操作只要发出一种 Action 即可，异步操作需要发出三种 Action，且针对这三种 action类型，需要定义三种对应的状态类型。分别为：
+  * 表示异步操作已经开始的 action 类型，表示异步操作正在进行中(status.LOADING)；
+  * 表示异步操作成功的action类型，表示异步操作已经成功完成(status.SUCCESS)；
+  * 表示异步操作失败的action类型，表示异步操作已经失败(status.FAILURE)。
+* action 的类型只能用于 action 对象中，状态的类型则是用来表示视图。
+* 异步action构造函数的套路代码如下：
+```
+  export const sampleAsyncAction = ()=>{
+    return (dispatch,getState) => {
+      dispatch(fetchStarted());  //用于将view置于“有异步action未完成”的状态，提示作用
+      fetch(apiUrl).then((res)=>{
+        if(res.status !== 200){
+          throw new Error('res status: '+ res.status);
+        }
+        res.json().then(json => {
+          dispatch(fetchSuccess(json.data));
+        }).catch(error =>{
+          throw new Error('invaild json'+ error);
+        })
+      }).catch(error => {
+        dispatch(fetchFailure(error))
+      })
+    }
+  }
 
+  //store.dispatch(sampleAsyncAction())
+```
+
+###### 11.2.5 **异步操作的中止**
+
+##### 11.2 Redux异步操作的其他方法
+* redux-saga
+* redux-promise
 
 
 
