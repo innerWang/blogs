@@ -24,7 +24,7 @@
 * React的组件有`this.props.children`属性，表示组件的所有子节点
 * 组件类的`propTypes`属性，可用于定义组件实例的属性类型，验证传入参数类型是否符合要求
 
-<br>
+<br>[top](#目录)<hr>
 
 #### 2. 组件通信 
 
@@ -89,7 +89,7 @@
     //store.dispatch({type:'add',data:1})
     //store.subscribe(()=>{render()})
   ```
-<br>
+<br>[top](#目录)<hr>
 
 #### 3. Redux 
 
@@ -144,26 +144,26 @@ const reducer = combineReducers({
 export default createStore(reducer);
 ```
 
-<br>
+<br>[top](#目录)<hr>
 
 #### 4. React Context API 
 
-<br>
+<br>[top](#目录)<hr>
 
 #### 5. React Hooks API 
-<br>
+<br>[top](#目录)<hr>
 
 #### 6. React Router 
-<br>
+<br>[top](#目录)<hr>
 
 #### 7. React生命周期 
-<br>
+<br>[top](#目录)<hr>
 
 #### 8. React的CSS-in-JS方案 
-<br>
+<br>[top](#目录)<hr>
 
 #### 9. React环境搭建 
-<br>
+<br>[top](#目录)<hr>
 
 #### 10. React-Redux的使用 
 
@@ -239,11 +239,11 @@ ReactDOM.render(
 * Provider 的原理是 React 组件的 [context](#4-React-Context-API) 属性。
 * React-Redux 定义了 Provider 的 `componentWillReceiveProps` 函数，在React组件的生命周期中，componentWillReceiveProps 函数在每次重新渲染时都会调用到。
 
-<br>
+<br>[top](#目录)<hr>
 
 #### 11. Redux的中间件和异步操作
 
-<br>
+<br>[top](#目录)<hr>
 
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
