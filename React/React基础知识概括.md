@@ -102,28 +102,28 @@
       · 一个组件需要改变另一个组件的状态
 
 ##### 3.1 基本概念
-3.1.1 **Store**
+###### 3.1.1 **Store**
 * `Store`是保存数据的的地方，整个应用只能有一个Store,可使用`createStore`函数来生成Store。
 
-3.1.2 **State**
+###### 3.1.2 **State**
 * `Store`对象包含所有的数据，若想得到某个时点的数据，就要对Store生成快照，这种时点的数据集合，叫做**State**。
 * 当前时刻的 State ，可以通过`store.getState()`得到。
 * Redux 规定，一个 State 对应一个 View ，只要 State 相同，View 就相同。
 
-3.1.3 **Action**
+###### 3.1.3 **Action**
 * Action 是 View 发出的通知，表示 State 应该要发生变化了。
 * Action 是一个对象。其中的type属性是必须的，表示 Action 的名称。其他属性可以自由设置。
 * 可以这样理解，Action 描述当前发生的事情。改变 State 的唯一办法，就是使用 Action。它会运送数据到 Store。
 
-3.1.4 **store.dispatch()**<br>
+###### 3.1.4 **store.dispatch()**<br>
 * `store.dispatch()`是发出Action的唯一方法，它接受一个 Action 对象作为参数，将它发送出去。
 
-3.1.5 **Reducer**
+###### 3.1.5 **Reducer**
 * Store 收到 Action 后，必须给出一个新的State，才会使View发生变化，State的这个计算过程就叫 Reducer。
 * Reducer 是一个纯函数，接受 Action 和当前 State 作为参数，返回一个新的 State。纯函数就意味着，只要是同样的输入，必定得到同样的输出。所以，Reducer 函数里面不可改变State，必须返回一个全新的对象。 
 * `store.dispatch()`会触发 Reducer 的自动执行，`createStore()`接受 Reducer 作为参数，生成一个新的 Store，每当`store.dispatch()`发送过来一个新的 Action，就会自动调用 Reducer，得到新的 State。
 
-3.1.6 **store.subscribe()**
+###### 3.1.6 **store.subscribe()**
 * Store 允许使用`store.subscribe()` 方法设置监听函数，一旦State发生变化，就会自动执行这个函数。
 * `store.subscribe()`方法会返回一个函数，调用这个函数就可以解除监听。
 
@@ -186,7 +186,7 @@ const CounterContainer = connect(mapStateToProps,mapDispatchToProps)(Counter);
 
 这两个工作一个是内层UI组件的输入，一个是内层UI组件的输出，即分别对应参数 mapStateToProps 和 mapDispatchToProps 这两个函数所做的事情。
 
-###### 10.2.1 mapStateToProps
+###### 10.2.1 **mapStateToProps**
 * mapStateToProps 是一个函数，返回的是一个对象，包含组件所需使用的state中的部分数据，组件可直接通过`this.props.属性`引用数据。
 * mapStateToProps 的第一个参数始终是state，还可以使用第二个参数`ownProps`，代表直接传递给容器组件的 props 对象，需要注意的是，若使用了`ownProps`作为参数，如果容器组件的参数发送变化，也会引起 UI 组件的重新渲染。
 * connect 方法可以省略 mapStateToProps 参数，这样UI组件就不会订阅 Store，当Store发生更新时不会引起UI组件的更新。
@@ -198,7 +198,7 @@ const mapStateToProps = (state)=>{
 }
 ```
 
-###### 10.2.2 mapDispatchToProps
+###### 10.2.2 **mapDispatchToProps**
 * mapDispatchToProps 用于把 UI 组件暴露出来的函数类型的prop关联上 `dispatch`函数的调用,它可以是一个函数，也可以是一个对象。
 * mapDispatchToProps 是函数时，包含两个参数，分别为 dispatch(必须) 以及 ownProps。
 ```
@@ -242,6 +242,28 @@ ReactDOM.render(
 <br>[top](#目录)<hr>
 
 #### 11. Redux的中间件和异步操作
+##### 11.1 React组件访问服务器
+在 React 应用中访问服务器的一种趋势是使用浏览器原生支持的`fetch`函数来访问网络资源，fetch 函数返回的结果是一个 Promise 对象，对于不支持 fetch 的浏览器版本，也可以通过 fetch 的 polyfill 增加对fetch的支持。<br>
+  * 在本地访问API时，会遇到跨域的情况，解决跨域访问API的一个方式就是通过代理(proxy)，由于跨域访问API的限制是针对浏览器的行为，服务端无任何限制。可以使自己的网页访问所属域名下一个服务器的API接口，再让该服务器去把请求转发给实际所需请求的域名下的API，接收到数据后再让该服务器把数据转发回来。
+  * 通常我们在组件的`componentDidMount`函数中发送请求获取服务器的资源，这是因为React16之后采用了Fiber架构，只有componentDidMount声明周期函数是确定被执行一次的，类似ComponentWillMount的生命周期钩子都有可能执行多次。
+  * 需要注意的是，fetch 认为只要服务器返回合法的 HTTP 响应就算成功，就会调用`then`提供的回调函数，即使状态码是表示出错了的 400 或 500，所以需要在 then 中首先检查传入参数 response 的status字段，当为 200 或 304 时才继续，否则以错误处理。
+
+当组件变得庞大复杂时，应该尽量把应用的状态存放在 Redux Store 中，同样，访问服务器的操作应该由 Redux 来完成。
+
+##### 11.2 Redux访问服务器 
+ Redux 的单向数据流是同步操作，用户操作派发一个 action 对象后，reducer 会根据旧的 state 以及接收到的 action 生成新的 state，然后会即刻引发组件的渲染更新，这其中并没有执行异步操作的机会，Redux 提供了 thunk 的解决方案，可以使得 Reducer 在异步操作结束后自动执行。
+
+###### 11.2.1 **redux-thunk 中间件**
+
+
+
+###### 11.2.2 **异步 action 对象**
+
+
+
+
+
+
 
 <br>[top](#目录)<hr>
 
