@@ -26,7 +26,8 @@
 
 <br>
 
-#### 2. 组件通信 <a href='#目录'>返回目录</a>
+#### 2. 组件通信 
+
 ##### 2.1 父子通信
 * 父组件传递数据给子组件时，在调用子组件的地方将数据作为属性的值传入，子组件即可通过`props.属性`获取到数据
 ```javascript
@@ -90,7 +91,8 @@
   ```
 <br>
 
-#### 3. Redux <a href='#目录'>返回目录</a>
+#### 3. Redux 
+
 　实际应用中，并不一定需要使用Redux，当UI层十分简单，互动较少时，使用Redux则会增加应用的复杂性。<br>
 　当应用有如下场景时，可考虑使用Redux:
 
@@ -144,26 +146,27 @@ export default createStore(reducer);
 
 <br>
 
-#### 4. React Context API <a href='#目录'>返回目录</a>
+#### 4. React Context API 
 
 <br>
 
-#### 5. React Hooks API <a href='#目录'>返回目录</a>
+#### 5. React Hooks API 
 <br>
 
-#### 6. React Router <a href='#目录'>返回目录</a>
+#### 6. React Router 
 <br>
 
-#### 7. React生命周期 <a href='#目录'>返回目录</a>
+#### 7. React生命周期 
 <br>
 
-#### 8. React的CSS-in-JS方案 <a href='#目录'>返回目录</a>
+#### 8. React的CSS-in-JS方案 
 <br>
 
-#### 9. React环境搭建 <a href='#目录'>返回目录</a>
+#### 9. React环境搭建 
 <br>
 
-#### 10. React-Redux的使用 <a href='#目录'>返回目录</a>
+#### 10. React-Redux的使用 
+
 ##### 10.1 展示组件和容器组件
 * React-Redux将所有组件分为两大类:
   * 处于内层只负责渲染界面的组件，叫做UI组件(presentational component);
@@ -238,7 +241,8 @@ ReactDOM.render(
 
 <br>
 
-#### 11. Redux的中间件和异步操作 <a href='#目录'>返回目录</a>
+#### 11. Redux的中间件和异步操作
+
 <br>
 
 
