@@ -1,6 +1,6 @@
 # React基础知识概括
 
-### 目录
+## 目录
 1. [React组件](#1-React组件)
 2. [组件通信](#2-组件通信)
 3. [Redux](#3-Redux)
@@ -14,7 +14,7 @@
 11. [Redux的中间件和异步操作](#11-Redux的中间件和异步操作)
 <br><br>
 
-#### 1. React组件 
+## 1. React组件 
 * JSX语法：扩展的JS语法，可使用JSX语法在JS中编写类似HTML结构的代码
 * React的组件名称首字母必须大写
 * React中类的方法默认不绑定`this`，可使用`bind`或`箭头函数`手动绑定
@@ -26,9 +26,9 @@
 
 <br>[top](#目录)<hr>
 
-#### 2. 组件通信 
+## 2. 组件通信 
 
-##### 2.1 父子通信
+### 2.1 父子通信
 * 父组件传递数据给子组件时，在调用子组件的地方将数据作为属性的值传入，子组件即可通过`props.属性`获取到数据
 ```javascript
  <Parent>
@@ -37,8 +37,8 @@
 ```
 * 子组件传递数据给父组件时，需要父组件事先定义一个函数，并通过props传给子组件，子组件在特定时机调用此函数，函数的传入参数即可作为传入的数据
 
-##### 2.2 任意组件通信 
-###### 2.2.1 使用EventHub
+### 2.2 任意组件通信 
+#### 2.2.1 使用EventHub
   * 即为发布订阅模式，使用trigger触发一个事件并传递数据，使用on监听事件并获取数据
   * 一个组件监听某个事件，另一组件触发相同事件并传参，即可实现两个组件的通信
   * 缺点：事件容易越来越多，不易控制代码复杂度，且对事件不好统一管理
@@ -68,7 +68,7 @@
   //eventHub.trigger('我要花钱',100)
   ```
 
-###### 2.2.2 使用Redux  
+#### 2.2.2 使用Redux  
   * 根据定义的reducer方法创建store,reducer方法为纯函数，根据原先的state以及接收到的action返回新的state
   * 子组件的操作派发(调用`store.dispatch()`)一个action对象(包含type以及其他数据)
   * reducer利用接收的action以及旧的state按照预先定义的规则更新store中的state
@@ -91,7 +91,7 @@
   ```
 <br>[top](#目录)<hr>
 
-#### 3. Redux 
+## 3. Redux 
 
 　实际应用中，并不一定需要使用Redux，当UI层十分简单，互动较少时，使用Redux则会增加应用的复杂性。<br>
 　当应用有如下场景时，可考虑使用Redux:
@@ -101,33 +101,33 @@
       · 一个组件需要改变全局状态
       · 一个组件需要改变另一个组件的状态
 
-##### 3.1 基本概念
-###### 3.1.1 **Store**
+### 3.1 基本概念
+#### 3.1.1 **Store**
 * `Store`是保存数据的的地方，整个应用只能有一个Store,可使用`createStore`函数来生成Store。
 
-###### 3.1.2 **State**
+#### 3.1.2 **State**
 * `Store`对象包含所有的数据，若想得到某个时点的数据，就要对Store生成快照，这种时点的数据集合，叫做**State**。
 * 当前时刻的 State ，可以通过`store.getState()`得到。
 * Redux 规定，一个 State 对应一个 View ，只要 State 相同，View 就相同。
 
-###### 3.1.3 **Action**
+#### 3.1.3 **Action**
 * Action 是 View 发出的通知，表示 State 应该要发生变化了。
 * Action 是一个对象。其中的type属性是必须的，表示 Action 的名称。其他属性可以自由设置。
 * 可以这样理解，Action 描述当前发生的事情。改变 State 的唯一办法，就是使用 Action。它会运送数据到 Store。
 
-###### 3.1.4 **store.dispatch()**<br>
+#### 3.1.4 **store.dispatch()**<br>
 * `store.dispatch()`是发出Action的唯一方法，它接受一个 Action 对象作为参数，将它发送出去。
 
-###### 3.1.5 **Reducer**
+#### 3.1.5 **Reducer**
 * Store 收到 Action 后，必须给出一个新的State，才会使View发生变化，State的这个计算过程就叫 Reducer。
 * Reducer 是一个纯函数，接受 Action 和当前 State 作为参数，返回一个新的 State。纯函数就意味着，只要是同样的输入，必定得到同样的输出。所以，Reducer 函数里面不可改变State，必须返回一个全新的对象。 
 * `store.dispatch()`会触发 Reducer 的自动执行，`createStore()`接受 Reducer 作为参数，生成一个新的 Store，每当`store.dispatch()`发送过来一个新的 Action，就会自动调用 Reducer，得到新的 State。
 
-###### 3.1.6 **store.subscribe()**
+#### 3.1.6 **store.subscribe()**
 * Store 允许使用`store.subscribe()` 方法设置监听函数，一旦State发生变化，就会自动执行这个函数。
 * `store.subscribe()`方法会返回一个函数，调用这个函数就可以解除监听。
 
-##### 3.2 Reducer的拆分
+#### 3.2 Reducer的拆分
 * 由于整个应用只有一个 State 对象，对于大型应用而言，这个 State 必然十分庞大，导致负责生成 State 的Reducer函数也十分庞大。我们可以把Reducer 函数进行拆分，不同函数负责处理不同属性，最终合并为一个大的Reducer即可
 * Reducer提供了一个`combineReducer`方法，用于合并多个子组件所对应的 Reducer。
 ```
@@ -146,34 +146,34 @@
 
 <br>[top](#目录)<hr>
 
-#### 4. React Context API 
+## 4. React Context API 
 
 <br>[top](#目录)<hr>
 
-#### 5. React Hooks API 
+## 5. React Hooks API 
 <br>[top](#目录)<hr>
 
-#### 6. React Router 
+## 6. React Router 
 <br>[top](#目录)<hr>
 
-#### 7. React生命周期 
+## 7. React生命周期 
 <br>[top](#目录)<hr>
 
-#### 8. React的CSS-in-JS方案 
+## 8. React的CSS-in-JS方案 
 <br>[top](#目录)<hr>
 
-#### 9. React环境搭建 
+## 9. React环境搭建 
 <br>[top](#目录)<hr>
 
-#### 10. React-Redux的使用 
+## 10. React-Redux的使用 
 
-##### 10.1 展示组件和容器组件
+### 10.1 展示组件和容器组件
 * React-Redux将所有组件分为两大类:
   * 处于内层只负责渲染界面的组件，叫做UI组件(presentational component);
   * 处于外层负责和Redux Store打交道的组件，叫做容器组件(container component);
 * React-Redux规定，所有的展示组件都由用户提供，容器组件则是React-Redux自动生成。
 
-##### 10.2 connect方法 
+### 10.2 connect方法 
 React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect接受两个参数 mapStateToProps 以及 mapDispatchToProps，其执行结果仍是一个函数，此时将UI组件Counter作为参数传入，得到的结果即为容器组件 CounterContainer。
 
 ```
@@ -186,7 +186,7 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
 
 这两个工作一个是内层UI组件的输入，一个是内层UI组件的输出，即分别对应参数 mapStateToProps 和 mapDispatchToProps 这两个函数所做的事情。
 
-###### 10.2.1 **mapStateToProps**
+#### 10.2.1 **mapStateToProps**
 * mapStateToProps 是一个函数，返回的是一个对象，包含组件所需使用的state中的部分数据，组件可直接通过`this.props.属性`引用数据。
 * mapStateToProps 的第一个参数始终是state，还可以使用第二个参数`ownProps`，代表直接传递给容器组件的 props 对象，需要注意的是，若使用了`ownProps`作为参数，如果容器组件的参数发送变化，也会引起 UI 组件的重新渲染。
 * connect 方法可以省略 mapStateToProps 参数，这样UI组件就不会订阅 Store，当Store发生更新时不会引起UI组件的更新。
@@ -198,7 +198,7 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
   }
 ```
 
-###### 10.2.2 **mapDispatchToProps**
+#### 10.2.2 **mapDispatchToProps**
 * mapDispatchToProps 用于把 UI 组件暴露出来的函数类型的prop关联上 `dispatch`函数的调用,它可以是一个函数，也可以是一个对象。
 * mapDispatchToProps 是函数时，包含两个参数，分别为 dispatch(必须) 以及 ownProps。
 ```
@@ -224,7 +224,7 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
 ```
 
 
-##### 10.3 Provider
+#### 10.3 Provider
 * React-Redux 提供 Provider 组件，可以让容器组件拿到 state 。
 ```
   ReactDOM.render(
@@ -241,8 +241,8 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
 
 <br>[top](#目录)<hr>
 
-#### 11. Redux的中间件和异步操作
-##### 11.1 React组件访问服务器
+## 11. Redux的中间件和异步操作
+### 11.1 React组件访问服务器
 在 React 应用中访问服务器的一种趋势是使用浏览器原生支持的`fetch`函数来访问网络资源，fetch 函数返回的结果是一个 Promise 对象，对于不支持 fetch 的浏览器版本，也可以通过 fetch 的 polyfill 增加对fetch的支持。<br>
   * 在本地访问API时，会遇到跨域的情况，解决跨域访问API的一个方式就是通过代理(proxy)，由于跨域访问API的限制是针对浏览器的行为，服务端无任何限制。可以使自己的网页访问所属域名下一个服务器的API接口，再让该服务器去把请求转发给实际所需请求的域名下的API，接收到数据后再让该服务器把数据转发回来。
   * 通常我们在组件的`componentDidMount`函数中发送请求获取服务器的资源，这是因为React16之后采用了Fiber架构，只有componentDidMount声明周期函数是确定被执行一次的，类似ComponentWillMount的生命周期钩子都有可能执行多次。
@@ -250,10 +250,10 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
 
 当组件变得庞大复杂时，应该尽量把应用的状态存放在 Redux Store 中，同样，访问服务器的操作应该由 Redux 来完成。
 
-##### 11.2 Redux访问服务器 
+### 11.2 Redux访问服务器 
  Redux 的单向数据流是同步操作，用户操作派发一个 action 对象后，reducer 会根据旧的 state 以及接收到的 action 生成新的 state，然后会即刻引发组件的渲染更新，这其中并没有执行异步操作的机会，Redux 提供了 thunk 的解决方案，可以使得 Reducer 在异步操作结束后自动执行。
 
-###### 11.2.1 **redux-thunk 中间件**
+#### 11.2.1 **redux-thunk 中间件**
 * redux-thunk 提供一个 Redux 中间件，我们需要在创建 Store 时用上这个中间件。在 action 对象派发后，调用 reducer 函数之前，会先经历一个中间件环节，此时即为产生异步操作的机会。
 ![Redux的action处理流程](./images/Redux的action处理流程.png)
 
@@ -261,7 +261,7 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
   npm install --save redux-thunk  //redux-thunk是一个独立的发布包，需要单独安装
 ```
 
-###### 11.2.2 **使用中间件**
+#### 11.2.2 **使用中间件**
 ```
   // Store.js
   import { applyMiddleware, createStore } from 'redux';
@@ -276,7 +276,7 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
 *  `applyMiddleware` 是 Redux 的原生方法，作用是将所有中间件组成一个数组，依次执行。
 
 
-###### 11.2.3 **异步 action 对象**
+#### 11.2.3 **异步 action 对象**
 * 异步 action 对象不是一个普通的JS对象，而是一个函数。
 * redux-thunk的工作是检查 action 对象是否为函数，如不是则直接放行，完成普通 action 对象的生命周期 ，若是 ，则会执行该函数 ，并把 Store 的dispatch 函数和 getStatus 函数作为参数传递到函数中去。 不会让这个异步action对象继续往前派发到reducer函数。
 ```
@@ -306,7 +306,7 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
 ```
 上述示例中，异步action构造函数返回一个新的函数，当这个函数被dispatch派发后，会被redux-thunk执行，于是setTimeout发挥作用，在1s之后利用参数dispatch派发出同步action构造函数increment的结果。
 
-###### 11.2.4 **异步操作模式**
+#### 11.2.4 **异步操作模式**
 
 * 同步操作只要发出一种 Action 即可，异步操作需要发出三种 Action，且针对这三种 action类型，需要定义三种对应的状态类型。分别为：
   * 表示异步操作已经开始的 action 类型，表示异步操作正在进行中(status.LOADING)；
@@ -336,9 +336,12 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
   //store.dispatch(sampleAsyncAction())
 ```
 
-###### 11.2.5 **异步操作的中止**
+#### 11.2.5 **异步操作的中止**
 
-##### 11.2 Redux异步操作的其他方法
+<br><br><br>
+
+
+### 11.2 Redux异步操作的其他方法
 * redux-saga
 * redux-promise
 
