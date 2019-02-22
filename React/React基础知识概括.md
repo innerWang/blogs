@@ -157,18 +157,73 @@
 <br>[top](#目录)<hr>
 
 ## 5. React Hooks API 
+#### 5.1. 引言
+React Hooks 是 React 16.7.0-alpha 版本推出的新特性 ，其推出主要是为了解决状态共享的问题。 函数组件是没有状态的，组件若想有状态则需要使用 class，但是 Hooks 的出现则解决了函数组件没有状态的问题。
+
+* Hooks只能在函数组件内部被调用 
+
+#### 5.2. Hooks API --- useState
+
+调用`useState` API 会返回一个数组，包含一个值以及一个用于更新这个值的函数。
+```
+  import { useState } from 'react';
+
+  function App(){
+    const [value, setValue] = useState(0);  // 设置value的初值为0
+
+    const add = ()=>{
+      setValue(value+1)
+    }
+
+    return (
+      <div>
+        <div>{value}</div>
+        <button onClick={add}>+1</button>
+      </div>
+    )
+  }
+```
+#### 5.3. Hooks API --- useEffect
+可以在 useState 附近，使用 useEffect 在函数组件中执行一些具有副作用的操作。
+* 副作用： 依赖了一些未知来源的数据或表达式的代码
+* 将有副作用的函数写到 useEffect 中，但是试验了下在函数组件内部直接执行函数，不写到useEffect中，也可以得到期望的结果。
+```
+  import {useEffect} from 'react';
+
+  function App(){
+    //...
+    
+    useEffect(()=>{
+      document.querySelector('#test').innerText = value;
+    })
+
+    //...
+  }
+
+```
+
+
 <br>[top](#目录)<hr>
 
 ## 6. React Router 
+
+
 <br>[top](#目录)<hr>
 
 ## 7. React生命周期 
+
+
 <br>[top](#目录)<hr>
 
 ## 8. React的CSS-in-JS方案 
+
+
 <br>[top](#目录)<hr>
 
 ## 9. React环境搭建 
+
+
+
 <br>[top](#目录)<hr>
 
 ## 10. React-Redux的使用 
