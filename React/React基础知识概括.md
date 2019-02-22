@@ -23,6 +23,8 @@
 * React的组件可通过函数或者class来定义，当组件有自身的内部状态时，使用class，此时使用`constructor`时，一定要调用`super()`
 * React的组件有`this.props.children`属性，表示组件的所有子节点
 * 组件类的`propTypes`属性，可用于定义组件实例的属性类型，验证传入参数类型是否符合要求
+* 对于动态数量的子组件，每个子组件都必须带上值唯一可标示子组件的key属性，key的作用是为了在diff算法执行时更快的找到对应的节点，提高diff速度。
+* 接收 key 的组件无法读取 key 的值，因为key 和 ref 都是 React 保留的两个特殊的 prop ,并未预期让组件直接访问。
 
 <br>[top](#目录)<hr>
 
@@ -207,7 +209,8 @@ React Hooks 是 React 16.7.0-alpha 版本推出的新特性 ，其推出主要�
 <br>[top](#目录)<hr>
 
 ## 6. React Router 
-
+#### 6.1 基本概念
+* 
 
 <br>[top](#目录)<hr>
 
