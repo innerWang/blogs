@@ -151,8 +151,8 @@
 
 * context 即为局部的全局变量
   * 调用`{Provider, Consumer} = React.createContext(defaultValue)` 创建一个context，可初始化默认值。
-  * 使用`<Provider value={obj1}> </Provider>` 包裹住顶层组件，即可把value属性传递给 Provider 的后代 Consumers 。
-  * 在后代的render中使用`<Consumer>{data => {}} </Consumer>` 即可使用数据，此处`data`等于组件树中上层`context`的最近的`Provider`的`value`属性，若没有Provider，则为创建context时的defaultValue。
+  * 使用`<Provider value={obj}> </Provider>` 包裹住顶层组件，即可把value属性传递给 Provider 的后代 Consumers 。
+  * 在JSX语句中使用`<Consumer>{data => <Child x={data.n}/>} </Consumer>` 即可使用数据，此处`data`等于组件树中上层`context`的最近的`Provider`的`value`属性，若没有Provider，则为创建context时的defaultValue。
 
 <br>[top](#目录)<hr>
 
