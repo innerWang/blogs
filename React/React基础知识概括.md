@@ -278,6 +278,7 @@ React 组件的生命周期分为三个阶段，分别为： 装载过程，更�
 * componentDidMount
 
 #### 7.2 更新阶段(update)
+当 props 或者 state 被修改时，就会引发组件的更新过程，会依次调用下面的生命周期函数：
 * componentWillReceiveProps
 * shouldComponentUpdate
 * componentWillUpdate
@@ -285,8 +286,8 @@ React 组件的生命周期分为三个阶段，分别为： 装载过程，更�
 * componentDidUpdate
 
 #### 7.3 卸载阶段(unmount)
+当 React 组件要从 DOM 树上删除掉之前，对应的`componentWillUnmount` 函数会被调用，该函数适合做一些清理性的工作，例如在`componentDidMount` 中用非 React 的方式创造了一些 DOM 元素，若撒手不管则可能会引起内存泄漏，则需要在 componentWillUnmount 中把创造的 DOM 元素清理掉。
 
-* componentWillUnmount
 
 <br>[top](#目录)<hr>
 
