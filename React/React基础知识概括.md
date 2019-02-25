@@ -45,7 +45,7 @@
   * 一个组件监听某个事件，另一组件触发相同事件并传参，即可实现两个组件的通信
   * 缺点：事件容易越来越多，不易控制代码复杂度，且对事件不好统一管理
 
-  ```
+  ```js
   let money = {
     mount: 100000
   }
@@ -76,7 +76,7 @@
   * reducer利用接收的action以及旧的state按照预先定义的规则更新store中的state
   * 使用store.subscribe()监听state变化，一旦state变化就重新render
 
-  ```
+  ```js
     const reducer = (state=0,action)=>{
       switch(action.type){
         case 'add':
@@ -132,7 +132,7 @@
 #### 3.2 Reducer的拆分
 * 由于整个应用只有一个 State 对象，对于大型应用而言，这个 State 必然十分庞大，导致负责生成 State 的Reducer函数也十分庞大。我们可以把Reducer 函数进行拆分，不同函数负责处理不同属性，最终合并为一个大的Reducer即可
 * Reducer提供了一个`combineReducer`方法，用于合并多个子组件所对应的 Reducer。
-```
+```js
   import {createStore, combineReducers} from 'redux';
   import {reducer as todoReducer} from './todos';
   import {reducer as filterReducer} from './filter';
@@ -168,7 +168,7 @@ React Hooks 是 React 16.7.0-alpha 版本推出的新特性 ，其推出主要�
 #### 5.2. Hooks API --- useState
 
 调用`useState` API 会返回一个数组，包含一个值以及一个用于更新这个值的函数。
-```
+```js
   import { useState } from 'react';
 
   function App(){
@@ -190,7 +190,7 @@ React Hooks 是 React 16.7.0-alpha 版本推出的新特性 ，其推出主要�
 可以在 useState 附近，使用 useEffect 在函数组件中执行一些具有副作用的操作。
 * 副作用： 依赖了一些未知来源的数据或表达式的代码
 * 将有副作用的函数写到 useEffect 中，但是试验了下在函数组件内部直接执行函数，不写到useEffect中，也可以得到期望的结果。
-```
+```js
   import {useEffect} from 'react';
 
   function App(){
@@ -245,7 +245,7 @@ React Hooks 是 React 16.7.0-alpha 版本推出的新特性 ，其推出主要�
 
 ##### 6.2.4 使用react-router-dom
 
-```
+```js
    // use react-router-dom
    import { BrowserRouter as Router, Route, Link } from "react-router-dom";
    ReactDOM.render(
@@ -292,7 +292,31 @@ React 组件的生命周期分为三个阶段，分别为： 装载过程，更�
 <br>[top](#目录)<hr>
 
 ## 8. React的CSS-in-JS方案 
+React 对 HTML 的封装是 JSX语言，对 CSS 的封装沿用了 DOM 的 style属性对象，由于CSS的封装非常弱，导致了一系列的第三方库用于加强 React 的 CSS 操作，在此主要介绍`styled-components` 以及 `css-modules`两种方案。
 
+#### 8.1 styled-components
+
+styled-components 使用标签模板来对组件进行样式化，它移除了组件和样式之前的映射，这就意味着，在定义样式时，实际上创造了一个正常的 React 组件，而且样式也会附在上面。
+
+##### 安装
+```
+    npm install --save styled-components
+```
+##### 使用
+```js
+    import styled from 'styled-components';
+
+    const Title = styled.div`
+      font-size: 14px;
+      text-align: center;
+      color: red;
+    `;
+
+    <Title> Hello World! </Title>
+```
+
+
+#### 8.2 css-modules 
 
 <br>[top](#目录)<hr>
 
@@ -313,7 +337,7 @@ React 组件的生命周期分为三个阶段，分别为： 装载过程，更�
 ### 10.2 connect方法 
 React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect接受两个参数 mapStateToProps 以及 mapDispatchToProps，其执行结果仍是一个函数，此时将UI组件Counter作为参数传入，得到的结果即为容器组件 CounterContainer。
 
-```
+```js
   import { connect } from 'react-redux'
   const CounterContainer = connect(mapStateToProps,mapDispatchToProps)(Counter);
 ```
@@ -327,7 +351,7 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
 * mapStateToProps 是一个函数，返回的是一个对象，包含组件所需使用的state中的部分数据，组件可直接通过`this.props.属性`引用数据。
 * mapStateToProps 的第一个参数始终是state，还可以使用第二个参数`ownProps`，代表直接传递给容器组件的 props 对象，需要注意的是，若使用了`ownProps`作为参数，如果容器组件的参数发送变化，也会引起 UI 组件的重新渲染。
 * connect 方法可以省略 mapStateToProps 参数，这样UI组件就不会订阅 Store，当Store发生更新时不会引起UI组件的更新。
-```
+```js
   const mapStateToProps = (state)=>{
     return {
       todos : selectTodos(state.todos,state.filter)
@@ -338,7 +362,7 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
 #### 10.2.2 **mapDispatchToProps**
 * mapDispatchToProps 用于把 UI 组件暴露出来的函数类型的prop关联上 `dispatch`函数的调用,它可以是一个函数，也可以是一个对象。
 * mapDispatchToProps 是函数时，包含两个参数，分别为 dispatch(必须) 以及 ownProps。
-```
+```js
   function mapDispatchToProps(dispatch){
     return {
       add1: ()=>{
@@ -352,7 +376,7 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
 ```
 
 * mapDispatchToProps 是对象时，它的每个键名是对应 UI组件的同名参数，键值是一个函数,返回的Action会由Redux自动发出。
-```
+```js
   const mapDispatchToProps= {
        add1: ()=>{
          return {type:'add',payload:1}
@@ -363,7 +387,7 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
 
 #### 10.3 Provider
 * React-Redux 提供 Provider 组件，可以让容器组件拿到 state 。
-```
+```js
   ReactDOM.render(
     <Provider store={store}>
       <TodoApp />
@@ -399,7 +423,7 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
 ```
 
 #### 11.2.2 **使用中间件**
-```
+```js
   // Store.js
   import { applyMiddleware, createStore } from 'redux';
   import thunkMiddleware from "redux-thunk";
@@ -416,7 +440,7 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
 #### 11.2.3 **异步 action 对象**
 * 异步 action 对象不是一个普通的JS对象，而是一个函数。
 * redux-thunk的工作是检查 action 对象是否为函数，如不是则直接放行，完成普通 action 对象的生命周期 ，若是 ，则会执行该函数 ，并把 Store 的dispatch 函数和 getStatus 函数作为参数传递到函数中去。 不会让这个异步action对象继续往前派发到reducer函数。
-```
+```js
   const increment = ()=>({
     type: 'add',
     payload: 1
@@ -451,7 +475,8 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
   * 表示异步操作失败的action类型，表示异步操作已经失败(status.FAILURE)。
 * action 的类型只能用于 action 对象中，状态的类型则是用来表示视图。
 * 异步action构造函数的套路代码如下：
-```
+```js
+
   export const sampleAsyncAction = ()=>{
     return (dispatch,getState) => {
       dispatch(fetchStarted());  //用于将view置于“有异步action未完成”的状态，提示作用
@@ -471,6 +496,7 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
   }
 
   //store.dispatch(sampleAsyncAction())
+  
 ```
 
 #### 11.2.5 **异步操作的中止**
