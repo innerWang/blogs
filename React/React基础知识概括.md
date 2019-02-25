@@ -210,7 +210,8 @@ React Hooks 是 React 16.7.0-alpha 版本推出的新特性 ，其推出主要�
 
 ## 6. React Router 
 #### 6.1 基本概念
-* 每个URL都包含**域名部分**和**路径(path)**部分，例如URL `http://localhost:3000/home`，路径不分是 home, 根据路径找到对应应用内容的过程，也就是 React-Router 的重要功能----路由(Routing)。
+* location 接口表示其链接到的对象的位置(URL)。Document 和 Window 接口都有 location 属性。 location的属性包含  hash 属性和 pathname 属性，我们根据 hash 值或者 pathname 的值寻找对应应用内容的过程，就叫做路由。需要注意的是，当直接改动location.hash 时，不会引起页面刷新，当直接改动 location.pathname 时，会引起页面的刷新，不过window 的 history.pushState() 方法可以实现修改 pathname 而不刷新页面。可是对应不同的 pathname 使用 pushState() 方法时需要进行很多的条件判断，React-Router 库提供的 Router 组件则可以帮助我们十分简便的解决这个问题。
+
 
 <br>[top](#目录)<hr>
 
