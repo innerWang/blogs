@@ -3,7 +3,7 @@
 ## 目录
 
 ### 1. [Promise](#1-Promise)
-### 2. [async/await](#2-async/await)
+### 2. [async/await](#2-async-&-await)
 
 当我们想要依次执行三个函数时，通常的做法如下：
 ```js
@@ -23,7 +23,7 @@
 
 <br>[top](#目录)
 
-## 2. async/await
+## 2. async & await
 
 <br>[top](#目录)
 
