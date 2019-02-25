@@ -266,6 +266,27 @@ React Hooks 是 React 16.7.0-alpha 版本推出的新特性 ，其推出主要�
 
 ## 7. React生命周期 
 
+React 组件的生命周期分为三个阶段，分别为： 装载过程，更新过程，卸载过程。
+
+#### 7.1 装载阶段(mount)
+即为组件的初始化阶段，就是把组件第一次在DOM树中渲染的过程，仅会发生一次，依次调用的函数如下：
+* constructor
+* getInitState 
+* getDefaultProps  // 注意，getInitState 和 getDefaultProps 仅在使用 React.createClass方法创造组件类时才会发生作用。
+* componentWillMount
+* render  //仅返回一个jsx描述的结构，最终由 React 来操作渲染过程。
+* componentDidMount
+
+#### 7.2 更新阶段(update)
+* componentWillReceiveProps
+* shouldComponentUpdate
+* componentWillUpdate
+* render
+* componentDidUpdate
+
+#### 7.3 卸载阶段(unmount)
+
+* componentWillUnmount
 
 <br>[top](#目录)<hr>
 
