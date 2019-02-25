@@ -210,7 +210,7 @@ React Hooks 是 React 16.7.0-alpha 版本推出的新特性 ，其推出主要�
 
 ## 6. React Router 
 #### 6.1 基本概念
-* 
+* 每个URL都包含**域名部分**和**路径(path)**部分，例如URL `http://localhost:3000/home`，路径不分是 home, 根据路径找到对应应用内容的过程，也就是 React-Router 的重要功能----路由(Routing)。
 
 <br>[top](#目录)<hr>
 
