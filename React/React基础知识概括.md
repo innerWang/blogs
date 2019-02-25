@@ -210,8 +210,57 @@ React Hooks 是 React 16.7.0-alpha 版本推出的新特性 ，其推出主要�
 
 ## 6. React Router 
 #### 6.1 基本概念
-* location 接口表示其链接到的对象的位置(URL)。Document 和 Window 接口都有 location 属性。 location的属性包含  hash 属性和 pathname 属性，我们根据 hash 值或者 pathname 的值寻找对应应用内容的过程，就叫做路由。需要注意的是，当直接改动location.hash 时，不会引起页面刷新，当直接改动 location.pathname 时，会引起页面的刷新，不过window 的 history.pushState() 方法可以实现修改 pathname 而不刷新页面。可是对应不同的 pathname 使用 pushState() 方法时需要进行很多的条件判断，React-Router 库提供的 Router 组件则可以帮助我们十分简便的解决这个问题。
+##### 6.1.1 location 和 路由
 
+　location 接口表示其链接到的对象的位置(URL)。Document 和 Window 接口都有 location 属性。 location 的属性包含 hash 属性和 pathname 属性，我们根据 hash 值或者 pathname 的值寻找对应应用内容的过程，就叫做路由。需要注意的是，当直接改动 location.hash 时，不会引起页面刷新，当直接改动 location.pathname 时，会引起页面的刷新，不过 window 的 history.pushState() 方法可以实现修改 pathname 而不刷新页面。可是对应不同的 pathname 使用 pushState() 方法时需要进行很多的条件判断，React-Router 库提供的 Router 组件则可以帮助我们十分简便的解决这个问题。
+
+##### 6.1.2 React Router v4
+
+　`React Router v4` 是一个流行的纯React重写的包，在此版本中 React Router被拆分成三个包：react-router, react-router-dom 和 react-router-native 。 react-router 提供核心的路由组件与函数。其余两个则提供运行环境（即浏览器与react-native）所需的特定组件。 
+  * `react-router`： 实现了路由的核心功能
+  * `react-router-dom` : 基于 react-router , 加入了在浏览器运行环境下的一些功能，例如 `Link` 组件，可用于渲染一个 a 标签；还比如 `BrowserRouter` 和 `HashRouter` 组件，前者使用 pushState 和 popState 事件构建路由，后者使用 window.location.hash 和 hashchange 事件构建路由。
+  * `react-router-native`: 基于 react-router ，类似 react-router-dom ，加入了 react-native 运行环境下的一些功能。
+<br>
+当在浏览器环境下使用 react-router 时，则需要安装react-router-dom：
+
+```
+   npm install --save react-router-dom
+```
+#### 6.2 React Router 的组件
+##### 6.2.1 Router  
+* Router组件是一个通用的低级接口，一般会使用下面其中一个高级路由组件：
+```
+  <BrowserRouter>、 <HashRouter>、 <MemoryRouter>、 <NativeRouter>、< StaticRouter>
+```
+* Router 组件本身只是一个容器，真正的路由要通过 Route 组件来定义
+
+##### 6.2.2 Route
+* 其主要职责是一旦当前路径匹配 Route 的 path 属性时，就会按照以下方式之一进行渲染：
+  * component , 渲染 component 属性指定的组件: `<Route path="/user/:username" component={User}/>`
+  * render , 执行对应的函数，很方便的进行内联渲染:  `<Route path="/home" render={() => <div>Home</div>}/>`
+  * children, 与 render 类似，不同的是，当路径匹配或否时，都会渲染。
+
+##### 6.2.3 Link
+* Link 组件用于实现 <a> 标签的功能，会生成一个链接，允许用户点击后进行路由的切换。
+
+##### 6.2.4 使用react-router-dom
+
+```
+   // use react-router-dom
+   import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+   ReactDOM.render(
+   <Router>
+      <div>
+        <div>
+          <Link to="/login"><button>登录</button></Link>       // "/"代表从根路径开始匹配
+          <Link to="/signup"><button>注册</button></Link>
+        </div>
+        <Route path="/login" component={Box1} />            
+        <Route path="/signup" component={Box2} />
+      </div>
+    </Router>,rootElement);
+
+```
 
 <br>[top](#目录)<hr>
 
