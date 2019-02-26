@@ -12,6 +12,7 @@
 
 #### 2. [async/await](#async)
 * [语法](#async-grammer)
+* [错误处理机制](#async-handleErr)
 
 <br>
 
@@ -128,7 +129,6 @@ Promise.all 方法的参数可以不是数组，但必须有 Iterator 接口，�
 ## 2. <a name="async">async/await</a>
 
 ES2017 标准引入了 async 函数，使得异步操作变得更加方便。 `async`用于修饰函数，表明函数里有异步操作，`await`仅能在 async 函数体内使用，用于等待一个 Promise 对象的结果并返回，如果等待的不是 Promise 对象，则返回该值本身。
-
 <br><br>
 调用 async 函数时，会返回一个 Promise 对象，当 async 函数返回一个值时， Promise 的 resolve 方法会负责传递这个值，当 async 函数抛出异常时， Promise 的 reject 方法会传递这个异常值。
 
@@ -136,7 +136,7 @@ ES2017 标准引入了 async 函数，使得异步操作变得更加方便。 `a
 ```js
   // 定义一个异步函数，隐式返回一个 Promise 对象
   const fn = async (songid) => {
-    const albumid = await getAlbum(songid);
+    const albumid = await getAlbumID(songid);
     const nextsong = await getRandomSong(albumid);
     return nextsong;
   }
@@ -144,9 +144,46 @@ ES2017 标准引入了 async 函数，使得异步操作变得更加方便。 `a
   fn(1579).then(song => console.log(song)).catch(err => console.log(err))
 
 ```
+调用异步函数，必须等到内部所有 await 命令后面的 Promise 对象执行完，其返回的 Promise 对象才会发生状态改变，除非先遇到 return 语句或者抛出错误， 如上例，异步函数 fn 内部需要执行完获取唱片ID，根据唱片ID获取下一首歌的信息，才会调用 then 方法定义的回调函数，输出返回的信息。
 
+#### 2.2 <a name="async-handleErr">错误处理机制</a>
+任何一个 await 语句后面的 Promise 对象变为 reject 状态，那么整个 async 函数都会中断执行。
+```js
+ async function fn(){
+   await Promise.reject('err');
+   await Promise.resolve('ok'); // 不会执行
+ }
 
+ fn().then( data => console.log(data)).catch(err => console.log(err))  //'err'
+```
+此时，前一个await 语句异步操作状态变为 rejected, 后面的异步操作会被中止，此时若我们期望即使前一个操作失败，也不要中断后面的操作，则可以将第一个 await 放在 try..catch 结构中，即不管第一个异步操作成功与否，第二个都会执行。
+```js
+ async function fn(){
+   try{
+      await Promise.reject('err');
+   }catch(e){
+      console.log('first await err: '+e)
+   }
+   return await Promise.resolve('ok'); 
+ }
 
+ fn().then( data => console.log(data)).catch(err => console.log(err))  // 'first await err: err' 及 'ok'
+```
+
+* 使用注意点
+  * await 后面的 Promise 对象的状态可能会变为 rejected， 所以最好把 await 命令放在 try..catch 代码块中；
+  * 多个 await 命令后面的异步操作若是没有依赖关系，最好让他们同时触发
+  ```js
+  // 此种写法会先执行第一个await语句再执行第二个，比较耗时
+   let a = await getA();
+   let b = await getB();
+
+  //此种写法，会同时触发getA() 和 getB() ,缩短程序的执行时间
+  //Promise.all 会让多个异步操作同时执行
+  let [a,b] = Promise.all([getA(),getB()]);
+
+  ```
+  * await 命令仅可用在 async 函数中，用在普通函数中，会报错。
 
 
 
