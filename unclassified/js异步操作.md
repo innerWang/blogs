@@ -3,12 +3,12 @@
 ## 目录
 
 #### 1. [Promise](#promise)
-##### 1.1 [语法](#promise-grammer)
-##### 1.2 [应用举例](#promise-example)
-##### 1.3 [Promise.prototype.then()](#promise-then)
-##### 1.4 [Promise.prototype.catch()](#promise-catch)
-##### 1.5 [Promise.all()](#promise-all)
-##### 1.6 [Promise.race()](#promise-race)
+* [语法](#promise-grammer)
+* [应用举例](#promise-example)
+* [Promise.prototype.then()](#promise-then)
+* [Promise.prototype.catch()](#promise-catch)
+* [Promise.all()](#promise-all)
+* [Promise.race()](#promise-race)
 
 #### 2. [async/await](#async)
 
