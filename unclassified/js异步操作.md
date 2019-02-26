@@ -11,6 +11,7 @@
 * [Promise.race()](#promise-race)
 
 #### 2. [async/await](#async)
+* [语法](#async-grammer)
 
 <br>
 
@@ -125,6 +126,35 @@ Promise.all 方法的参数可以不是数组，但必须有 Iterator 接口，�
 <br>[top](#目录)
 
 ## 2. <a name="async">async/await</a>
+
+ES2017 标准引入了 async 函数，使得异步操作变得更加方便。 `async`用于修饰函数，表明函数里有异步操作，`await`仅能在 async 函数体内使用，用于等待一个 Promise 对象的结果并返回，如果等待的不是 Promise 对象，则返回该值本身。
+
+<br><br>
+调用 async 函数时，会返回一个 Promise 对象，当 async 函数返回一个值时， Promise 的 resolve 方法会负责传递这个值，当 async 函数抛出异常时， Promise 的 reject 方法会传递这个异常值。
+
+#### 2.1 <a name="async-grammer">语法</a>
+```js
+  // 定义一个异步函数，隐式返回一个 Promise 对象
+  const fn = async (songid) => {
+    const albumid = await getAlbum(songid);
+    const nextsong = await getRandomSong(albumid);
+    return nextsong;
+  }
+
+  fn(1579).then(song => console.log(song)).catch(err => console.log(err))
+
+```
+
+
+
+
+
+
+
+
+
+
+
 
 <br>[top](#目录)
 
