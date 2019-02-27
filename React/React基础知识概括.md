@@ -395,7 +395,7 @@ React-Redux提供`connect`方法，用于从UI组件生成容器组件。connect
 ```
 
 
-#### 10.3 Provider
+### 10.3 Provider
 * React-Redux 提供 Provider 组件，可以让容器组件拿到 state 。
 ```js
   ReactDOM.render(
