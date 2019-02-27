@@ -332,6 +332,12 @@ styled-components 使用标签模板来对组件进行样式化，它移除了�
 
 ## 10. React-Redux的使用 
 
+使用 react-redux 需要安装 redux 以及 react-redux:
+```js 
+  npm install --save redux
+  npm install --save react-redux
+```
+
 ### 10.1 展示组件和容器组件
 * React-Redux将所有组件分为两大类:
   * 处于内层只负责渲染界面的组件，叫做UI组件(presentational component);
