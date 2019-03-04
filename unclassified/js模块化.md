@@ -11,7 +11,9 @@
 ##### 3. 加载模块
 使用`require`方法加载模块，该方法读取一个文件并执行，返回文件内部的`module.exports`对象
 
-##### 4.示例
+<details>
+	<summary>代码示例</summary>
+
 ```js
  //模块定义 myModel.js
  var age = 10;
@@ -34,7 +36,28 @@
  //从 App.js加载模块
  var ageModule = require('./myModule.js');
  ageModule.getAge();
-```
 
-## 痛点
-从上述示例可以看出，`require`方法加载模块是同步加载，从浏览器端，脚本标签都是异步加载的，这样的话，传统的CommonJS模块在浏览器环境中无法正常加载。
+```
+</details>
+
+
+
+##### 痛点
+从上述示例可以看出，`require`方法加载模块是同步加载， 从浏览器端，脚本标签都是异步加载的， 这样的话， 传统的 CommonJS 模块在浏览器环境中无法正常加载。
+
+##### CommonJS 与 ES6 模块的区别
+* CommonJS 模块的输出时一个值的拷贝，ES6模块输出的是值的引用
+* CommonJS 模块是运行时加载，ES6模块是编译时输出接口。
+
+<a href="http://es6.ruanyifeng.com/#docs/module-loader#ES6-%E6%A8%A1%E5%9D%97%E4%B8%8E-CommonJS-%E6%A8%A1%E5%9D%97%E7%9A%84%E5%B7%AE%E5%BC%82">阮一峰 ES6模块与 CommonJS模块的差异</a>
+
+
+
+
+
+
+
+
+
+
+
