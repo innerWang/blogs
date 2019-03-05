@@ -1,16 +1,18 @@
-# 《图解HTTP》阅读纪要
+# HTTP知识点记录
 
+《图解HTTP》阅读纪要
 
 ## <a name="catalog">目录</a>
 
-#### 1. [网络模型与TCP协议](#firstSeg)
-#### 2. [常见HTTP方法及RESTful API](#SecondSeg)
+##### 1. [网络模型与TCP协议](#One)
+##### 2. [HTTP报文格式及常见HTTP方法](#Two)
+##### 3. [HTTP的状态码](#Three)
+##### 4. [HTTP的缓存控制](#Four)
+##### 5. [HTTPS的核心SSL/TLS运行机制](#Five)
 
+<br>
 
-
-
-
-## 1. <a name="firstSeg">网络模型与TCP协议</a>
+## 1. <a name="One">网络模型与TCP协议</a>
 #### 1.1 URL 和 URI
 客户端是指通过发送请求获取服务器资源的 Web 浏览器等程序。 Web 使用 HTTP (HyperText Transfer Protocol，超文本传输协议)作为规范，完成客户端和浏览器之间的通信。
 
@@ -57,22 +59,10 @@
 	* **数据链路层**：用于在同一链路不同主机的网络层接口之间移动数据包。
 
 
-#### 1.3 应用层协议HTTP
-HTTP协议主要是规定了客户端和服务器之间的通信格式，默认使用80端口。
-
-##### 1.3.1 请求报文的格式
-请求报文是由请求方法、请求URI、协议版本、可选的请求首部字段和内容实体构成。
-![](./images/http请求报文格式.png)
-
-##### 1.3.2 响应报文的格式
-响应报文由协议版本、状态码、用以解释状态码的原因短语，可选的响应首部字段以及实体内容构成。
-![](./images/http响应报文格式.png)
-
-
-#### 1.4 传输层TCP协议
+#### 1.3 传输层TCP协议
 TCP (Transmission Control Protocol，传输控制协议)是一种面向连接的、可靠的、基于字节流的传输层通信协议。
 
-##### 1.4.1 TCP的三次握手和四次挥手
+##### 1.3.1 TCP的三次握手和四次挥手
 
 * 三次握手
 	* 客户端发送SYN报文(seq=x)请求建立连接，进入SYN_SEND状态
@@ -87,7 +77,7 @@ TCP (Transmission Control Protocol，传输控制协议)是一种面向连接的
 
 之所以断开连接需要四步，是因为建立连接时，服务器可以把ACK和SYN一起回复，但是在断开连接时，服务器立马回了ACK，但是需要等待应用程序关闭网络连接后才可以发送FIN，这样ACK和FIN分开发送，就多了一个步骤。
 
-##### 1.4.2 TCP报文格式
+##### 1.3.2 TCP报文格式
 
 tcp 报文格式如下：
 
@@ -121,31 +111,281 @@ tcp 报文格式如下：
 
 <br>[Top](#catalog)
 
-## 2. <a name="SecondSeg">常见HTTP方法及RESTful API</a>
+## 2. <a name="Two">HTTP报文格式及常见HTTP方法</a>
 
-#### 2.1 常见的HTTP方法
+#### 2.1 应用层协议HTTP
+HTTP协议主要是规定了客户端和服务器之间的通信格式，默认使用80端口。
 
-* GET
-* POST
-* PUT
-* HEAD
-* DELETE
-* OPTIONS
-* CONNECT
-* PATCH
+##### 2.1.1 请求报文的格式
+请求报文是由请求方法、请求URI、协议版本、可选的请求首部字段和内容实体构成。
+![](./images/http请求报文格式.png)
 
-#### 2.2 如何实现一个简易静态服务器
+##### 2.1.2 响应报文的格式
+响应报文由协议版本、状态码、用以解释状态码的原因短语，可选的响应首部字段以及实体内容构成。
+![](./images/http响应报文格式.png)
+
+#### 2.2 常见的HTTP方法
+
+* GET ： 获取资源
+* POST ： 传输实体主体
+* PUT ： 传输文件，用于将请求报文的主体中包含的文件内容，保存到请求URL指定的位置，无验证机制。
+* HEAD ： 获取报文首部，和GET一样，只是不返回报文主体，用于确认URI的有效性及资源更新的日期时间等。
+* DELETE ： 用于删除请求URL指定的文件，与PUT相反。 无验证机制。
+* OPTIONS ： 用于查询针对请求URL指定的资源所支持的方法
+```js
+ //请求
+ OPTIONS * HTTP/1.1
+ Host: www.aaa.com
+ //响应
+ HTTP/1.1 200 OK
+ Allow:GET,POST,HEAD,OPTIONS
+```
+* CONNECT：要求在与代理服务器通信时建立隧道，实现用隧道协议进行 TCP 通信，主要使用 SSL 和 TLS 协议把通信内容加密后经网络隧道传输。
+* PATCH： 用于对资源进行部分修改。
+
+#### 2.3 HTTP的状态管理
+HTTP是不保存状态的协议，也就是说，不会保留之前一切请求或响应报文的信息，但是随着业务的发展，无状态处理复杂业务比较麻烦，比如用户登录了一个网站，此时想要购物结算，跳到其他商品页或者结算页时都期望能有用户的登录信息，为此引入了Cookie技术。
+
+Cookie 会在服务器的第一个响应报文中通过设置首部字段 Set-Cookie 的值(SessionID)，通知客户端保存 Cookie，当客户端下次再发送请求时，会在请求头中带上包含 SessionID 的 Cookie 字段，服务器收到后，就可以对比自己的记录，得到之前的状态信息。
+
+#### 2.4 如何实现一个简易静态服务器
 
 * 导入http模块，创建一个服务器，并监听端口
 * 服务器听到请求时，进行处理，需要根据不同的 方法/path 去执行不同的处理逻辑，获取数据，响应给客户端
 * 客户端的浏览器收到响应数据后，会把响应体中的数据按照指定格式展示出来。
 
+<details>
+	<summary> 代码示例 </summary>
 
-#### 2.3 RESTful API
-定义了一个规范，即把HTTP的方法与数据库的增删改查进行对应
+```js
+  //server.js
+  const http = require('http')
+  http.createServer(function(req,res){
+    //response.setHeader(name, value) 为响应头对象设置单个请求头的值
+    res.setHeader('Content-Type', 'text/html')
+
+    //response.writeHead(statusCode[, statusMessage][, headers])
+    res.writeHead(200,'ok')
+    res.end('hello world')
+  }).listen(3000)
+
+```
+</details>
 
 
-## 3. <a name="ThirdSeg">HTTP报文内部的HTTP信息</a>
+#### 2.5 RESTful API
+RESTful 定义了一个规范，即把HTTP的方法与数据库的增删改查进行对应，其核心思想就是，客户端发出的数据操作指令都是“动词+宾语”的结构，例如，`GET /weather`这个命令，`GET`是动词，`/weather`是宾语。
+
+动词通常就是五种HTTP方法，对应CRUD操作
+* GET： 读取(Read)
+* POST： 新建(Create)
+* PUT ： 更新(Update)，修改传参时需包含全部参数，幂等
+* PATCH ：更新(Update)，通常是部分更新，修改传参时只需要传递需要修改的参数，不幂等。
+* DELETE ：删除(Delete)
+
+<br>[Top](#catalog)
+
+## 3. <a name="Three">HTTP的状态码</a>
+
+
+<br>[Top](#catalog)
+
+## 4. <a name="Four">HTTP的缓存控制</a>
+若是每次提交请求都从服务器获取资源，则会对流量和时间造成极大的浪费，缓存是指代理服务器或客户端本地磁盘保存的资源副本，利用缓存可以减少对源服务器的访问。
+
+#### 4.1 Pragma 和 Expires
+在 HTTP 1.0时代，主要是通过 `Pragma`和`Expires`两个字段来设置缓存的。
+
+当 `Pragma` 设置为 `no-cache` 时，即禁用缓存，会告知客户端不要读取缓存，每次都需要从服务器发送请求才可。
+
+`Expires` 字段对应一个GMT，用于启用缓存和定义缓存过期时间，如果还没过该时间点则不发请求。
+
+<details>
+	<summary>Pragma 或 Expires实现缓存控制的代码</summary>
+
+```js
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+http.createServer(function(req,res){
+  let filePath = path.join(__dirname,req.url)
+  fs.readFile(filePath,(err,data)=>{
+    if(err){
+      res.writeHead(404,'not found')
+      res.end('Oh,Not Found')
+    }else{
+      //example1 添加过期时间
+      //new Date().toGMTString() 可获取当前的GMT时间, 是当前时间-8h
+      //res.setHeader('Expires','Tue, 05 Mar 2019 03:20:12 GMT')
+
+      //example2 不使用缓存,下次请求时req-header中包含这个，则返回200
+      res.setHeader('Pragma','no-cache')
+
+      //example3 两者一起使用时，Pragma的优先级更高
+      //res.setHeader('Expires','Tue, 05 Mar 2019 03:04:12 GMT')
+      //res.setHeader('Pragma','no-cache')
+ 
+      //example4
+      //let date = (new Date(Date.now() + 1000*5)).toGMTString()
+      //res.setHeader('Expires',date)
+
+      res.writeHead(200,'ok')
+      res.end(data)
+    }
+  })
+}).listen(3000)
+```
+</details>
+
+
+
+#### 4.2 Cache-Control
+
+<details>
+	<summary>Cache-Control实现缓存控制</summary>
+
+```js
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+http.createServer(function(req,res){
+  let filePath = path.join(__dirname,req.url)
+  fs.readFile(filePath,(err,data)=>{
+    if(err){
+      res.writeHead(404,'not found')
+      res.end('Oh,Not Found')
+    }else{
+      //example1 最多缓存10s
+      res.setHeader('Cache-Control','max-age=10')
+
+      //example2  不走缓存，会缓存报文，但是会标注 Cache-Control: no-cache，仍每次都会从服务器取
+      //res.setHeader('Cache-Control','no-cache')
+
+      //example3 不存， 中间节点等都不要存储数据到缓存，每次都从服务器取
+      //res.setHeader('Cache-Control','no-store')
+
+      res.writeHead(200,'ok')
+      res.end(data)
+    }
+  })
+}).listen(3000)
+```
+</details>
+
+
+
+#### 4.3 Cache-Control 与 Last-Modified / If-Modified-Since
+
+<details>
+	<summary>Cache-Control 与 Last-Modified 实现缓存控制</summary>
+	
+```js
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+http.createServer(function(req,res){
+  let filePath = path.join(__dirname,req.url)
+  fs.readFile(filePath,(err,data)=>{
+    if(err){
+      res.writeHead(404,'not found')
+      res.end('Oh,Not Found')
+    }else{
+      let mtime = Date.parse(fs.statSync(filePath).mtime)
+      res.setHeader('Cache-Control','no-cache')
+
+      if(!req.headers['if-modified-since']){
+        res.setHeader('Last-Modified',new Date(mtime).toGMTString())
+        res.writeHead(200,'ok')
+        res.end(data)
+      }else{
+        let oldtime = Date.parse(req.headers['if-modified-since'])
+        if(mtime > oldtime){
+          res.setHeader('Last-Modified',new Date(mtime).toGMTString())
+          res.writeHead(200,'ok')
+          res.end(data)
+        }else{
+          res.writeHead(304)
+          res.end()
+        }	
+      }
+    }
+  })
+}).listen(3000)
+```
+</details>
+
+
+
+#### 4.4 Cache-Control 与 ETag / If-None-Match
+如果是使用 Last-Modified 保存资源上次修改的时间，但是可能资源内容本身没变，但是修改时间却变了，这样再根据 Last-Modified 去判断则会重新返回200以及源文件，浪费带宽。 此时可选择使用 Etag 字段则可以很好的避免该问题。
+
+当客户端首次请求时，服务器会通过某种算法计算请求的资源，得到一个唯一的标识符，并在首部加上`Etag: 唯一标识符`，一起返回给客户端，客户端会保存此 ETag 字段，并在下次请求时通过 If-None-Match 字段带回给服务器，服务器在收到后，计算资源的 ETag 与收到的进行比对，若不一致，则返回新的资源和状态码200, 若一致，则返回状态码304，告诉客户端资源未更新，则客户端在收到304后，从本地缓存取出 response。 
+<details>
+	<summary>Cache-Control 与 ETag 实现缓存控制 </summary>
+
+```js
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+
+http.createServer(function(req,res){
+  let filePath = path.join(__dirname,req.url)
+  fs.readFile(filePath,(err,data)=>{
+    if(err){
+      res.writeHead(404,'not found')
+      res.end('Oh,Not Found')
+    }else{
+      console.log(req.headers)
+      res.setHeader('Cache-Control','no-cache')
+
+      let oldEtag = req.headers['if-none-match']
+			
+      if(!oldEtag){
+        let md5 = crypto.createHash('md5')
+        res.setHeader('Etag', md5.update(data).digest('base64'))
+        res.writeHead(200,'ok')
+        res.end(data)
+      }else{
+        let newEtag = crypto.createHash('md5').update(data).digest('base64')
+        if(oldEtag !== newEtag){
+          res.setHeader('Etag',newEtag)
+          res.writeHead(200,'ok')
+          res.end(data)
+        }else{
+          res.writeHead(304)
+          res.end()
+        }	
+      }
+    }
+  })
+}).listen(3000)
+```
+</details>
+
+
+<br>[Top](#catalog)
+
+## 5. <a name="Five">HTTPS的核心SSL/TLS运行机制</a>
+网络通信中，仅靠 HTTP 进行明文数据通信是十分不安全的，面临着窃听、篡改、伪装、以及否认等风险。HTTPS 称为超文本传输安全协议，使用 HTTP 进行通信，但是利用 SSL/TLS 来加密HTTP数据包，主要用于提供对网站服务器的身份认证，保护交换数据的隐私和完整性。
+
+HTTPS并非是应用层的新协议，只是HTTP通信接口部分用SSL/TLS代替而已，通常，HTTP直接和TCP通信，当使用SSL时，则变为HTTP先和SSL通信，再由SSL和TCP通信。
+
+#### 5.1 SSL的握手阶段
+在开始加密通信之前，会先握手建立连接和交换参数，步骤如下：
+* 第一步： 客户端发送报文包含支持的协议版本号，支持的加密方法，以及客户端生成的随机数；
+* 第二步： 服务器发送报文确认双方使用的加密方法，并给出**包含了服务器公钥的数字证书**，以及服务器生成的随机数；
+* 第三步： 客户端验证数字证书的有效性，确认有效后，会生成第三个随机数，并用证书中的公钥加密发给服务器；
+* 第四步： 服务器根据自己的私钥解密获取第三个随机数；
+* 第五步： 客户端和服务器分别用确认的加密方法，对这个三个随机数进行加密，得到**对话密钥**，用于加密后续的HTTP通信报文。
+
+#### 5.2 session 的恢复
+对话若是在通信过程中被中断，则需要重新握手，此时可采用 sessionID 以及 session ticket 来恢复原来的会话。
+
+<br>[Top](#catalog)
 
 
 <br><br><br><br><br><br><br><br><br><br><br><br>
