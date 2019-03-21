@@ -111,7 +111,7 @@ Node.js启动时会初始化 event loop，处理输入的脚本，然后开始�
 每个event loop 按照如下六个阶段循环：
 
 <div align="left">
-  <img src="./images/eventloop_1.PNG" width = "350"  alt="node eventloop 阶段图">
+  <img src="./images/eventloop_1.png" width = "350"  alt="node eventloop 阶段图">
 </div>
 
 
