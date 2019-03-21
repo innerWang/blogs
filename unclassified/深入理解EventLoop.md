@@ -94,7 +94,7 @@ new Promise(function (resolve) {
 <br><br>
 
 
-## 3. <a name="thress">NodeJS的Event Loop</a>
+## 3. <a name="three">NodeJS的Event Loop</a>
 
 Node 对 event loop 的官方说明参见[这里](https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/)。
 
