@@ -101,8 +101,9 @@
 ```
 最后可在当前项目目录下的out文件夹中，找到HELLO-win32-x64文件夹，其中的HELLO.exe即为生成的应用。
 
-![目录](./images/electron_1.PNG)
-
+<div align="left">
+  <img src="./images/electron_1.PNG" width = "250"  alt="文件目录">
+</div>
 
 
 
