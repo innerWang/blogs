@@ -210,7 +210,6 @@ setTimeout(()=>{  //记最外层回调为 fn
 
 ##### 3) 示例3
 ```js
-// example 3
 setTimeout(()=>{  //回调记为 f1
   setTimeout(()=>console.log(1),0)   //回调记为 f2
   console.log(2)
@@ -224,6 +223,31 @@ setImmediate(()=>{  //回调记为 f3
 ```
 若进入 event loop 已经耗时 1ms，此时第一轮 loop 会执行回调f1 f3,输出 2 3 ，将 f2, f3 分别压到下一轮loop对应阶段的队列；到下一轮时依次输出 1 4。<br>
 若进入 event loop 还未耗时 1ms，此时第一轮 loop 会执行回调f3，输出3，将 f1 f4 分为压入对应阶段的队列；到下一轮执行 f1 输出2，执行f4输出4，将f2压入队列；再第三轮则执行 f2, 输出1 。
+
+
+##### 4) 示例4
+```js
+setImmediate(function(){
+    console.log(1);
+},0);
+setTimeout(function(){
+    console.log(2);
+},0);
+new Promise(function(resolve){
+    console.log(3);
+    resolve();
+    console.log(4);
+}).then(function(){
+    console.log(5);
+});
+console.log(6);
+process.nextTick(function(){
+    console.log(7);
+});
+console.log(8);
+
+// 结果为 3 4 6 8 7 5 2 1
+```
 
 
 <br><br>

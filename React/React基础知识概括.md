@@ -188,6 +188,7 @@ React Hooks 是 React 16.7.0-alpha 版本推出的新特性 ，其推出主要�
 ```
 #### 5.3. Hooks API --- useEffect
 可以在 useState 附近，使用 useEffect 在函数组件中执行一些具有副作用的操作。
+
 * 副作用： 依赖了一些未知来源的数据或表达式的代码
 * 将有副作用的函数写到 useEffect 中，但是试验了下在函数组件内部直接执行函数，不写到useEffect中，也可以得到期望的结果。
 ```js
@@ -204,6 +205,8 @@ React Hooks 是 React 16.7.0-alpha 版本推出的新特性 ，其推出主要�
   }
 
 ```
+
+下面参考官方文档：
 
 
 <br>[top](#目录)<hr>
