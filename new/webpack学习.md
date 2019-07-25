@@ -4,26 +4,26 @@
 
 由于webpack4开始，将webpack内核以及webpack-cli分开了，所以使用时需要同时安装webpack以及webpack-cli
 
-```
+```js
 yarn add webpack webpack-cli -D
 
-./node_modules/.bin/webpack -v  可以查看项目中安装的webpack的版本
+./node_modules/.bin/webpack -v  //可以查看项目中安装的webpack的版本
 ```
 
 ##### 1.1 简要使用webpack
 
 创建一个`webpack.config.js`文件，
 
-```
+```js
 'use strict';
 const path = require('path')
 module.exports = {
-	entry: './src/index.js',
-	output: {
-		path: path.join(__dirname, 'dist'),
-		filename: 'bundle.js'
-	},
-	mode: 'production'
+  entry: './src/index.js',
+  output: {
+    path: path.join(__dirname, 'dist'),
+    filename: 'bundle.js'
+  },
+  mode: 'production'
 }
 
 // 在./src/index.js 编写 js， 运行webpack ， 即可以在./dist中找到打包后的bundle.js文件
@@ -31,9 +31,9 @@ module.exports = {
 
 局部安装的模块，会在`node_modules/.bin`目录创建软链接，`package.json`可以默认读取到.bin目录下的命令，则可以通过在`package.json`的`scripts`属性中添加一条 :
 
-```
+```js
 scripts: {
-	"build" : webpack
+  "build" : webpack
 }
 
 //此时运行webpack可使用如下指令
@@ -43,6 +43,7 @@ npm run build  //则会自动去node_modules中去寻找webpack
 
 
 <hr/>
+
 ### 2. Webpack 基础用法一： 基础概念
 
 ##### 2.1 Entry 
@@ -55,18 +56,18 @@ webpack会根据入口文件去寻找依赖，将依赖都加入依赖树，根�
 
 ```
 module.exports = {
-	entry: './src/index.js'
+  entry: './src/index.js'
 }
 ```
 
 ###### 2.1.2 多入口： entry是一个对象，适用于多页应用
 
-```
+```js
 module.exports = {
-	entry: {
-		app: './src/app.js',
-		adminApp: './src/adminApp.js'
-	}
+  entry: {
+    app: './src/app.js',
+    adminApp: './src/adminApp.js'
+  }
 }
 ```
 
@@ -92,12 +93,13 @@ module.exports = {
 
 ```js
 module.exports = {
-	entry: {
-		index: './src/index.js',
-		search: './src/search.js'
-	},
+  entry: {
+    index: './src/index.js',
+    search: './src/search.js'
+  },
   output: {
-    filename: '[name].js',       // 通过占位符确保文件名称的唯一， name为打包后文件的名称
+    // 通过占位符确保文件名称的唯一， name为打包后文件的名称
+    filename: '[name].js',       
     path: __dirname + '/dist'
   }
 }
@@ -116,7 +118,7 @@ Loaders 本身是一个函数，接受源文件作为参数，返回转换的结
 ###### 2.3.1 常见的Loaders
 
 | 名称          | 描述                             |
-| ------------- | -------------------------------- |
+| -| - |
 | babel-loader  | 转换ES6、ES7等JS新特性语法       |
 | css-loader    | 支持.css文件的加载和解析         |
 | less-loader   | 将less文件转换成css              |
@@ -135,8 +137,8 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.txt$/,          // test 指定匹配规则
-        use: 'raw-loader'				 // use 指定使用的 loader名称
+        test: /\.txt$/,      // test 指定匹配规则
+        use: 'raw-loader'   // use 指定使用的 loader名称
       }
     ]
   }
@@ -171,7 +173,7 @@ module.exports = {
     filename: 'bundle.js'
   },
   plugins: [
-    new HtmlWebpackPlugin({            // 放到plugins数组中
+    new HtmlWebpackPlugin({     // 放到plugins数组中
       template: './src/index.html'
     })
   ]
@@ -192,15 +194,16 @@ mode 是 webpack4 才提出的概念。
 
 ##### 2.5.1 mode的内置函数功能
 
-| 选项        | -                                                            |
-| ----------- | ------------------------------------------------------------ |
+| 选项        | 描述 |
+| - | - |
 | development | 设置 `process.env.NODE_ENV`的值为 `development`.<br />开启`NamedChunksPlugin` 和`NamedModulePlugin`，可以在代码热更新阶段在控制台打印是哪个模块发生了热更新，以及打印模块的路径。 |
 | production  | 设置 `process.env.NODE_ENV`的值为 `production`.<br />开启`FlagDependencyUsagePlugin` ,`FlagIncludedChunksPlugin`,等。。。<br />此时webpack 会默认去压缩，检测变量是否有副作用等等。 |
-| none        | 不开启任何优化选项                                           |
+| none        | 不开启任何优化选项  |
 
 
 
 <hr/>
+
 ### 3. Webpack基础用法二： 资源解析
 
 ##### 3.1 解析 ES6和React JSX
@@ -209,13 +212,14 @@ mode 是 webpack4 才提出的概念。
 
 ```js
 module.exports = {
-  entry: './src/index.js',
+   entry: './src/index.js',
 +  module: {
 +    rules: [
-+  		{
-+      	test: /\.js$/,    // 指定使用 babel-loader 解析 .js 文件
++     {
++       // 指定使用 babel-loader 解析 .js 文件
++      	test: /\.js$/, 
 +     	use: 'babel-loader'
-+    	}
++     }
 +   ]
 + }
 }
@@ -226,8 +230,8 @@ babel-loader依赖于babel， 其对应的配置文件是 : `.babelrc`，在配�
 ```js
 {
   "presets": [
-+    "@babel/preset-env"    // 增加ES6的 babel prest配置
-+    "@babel/preset-react"  // 增加 React 的 babel preset配置
++   "@babel/preset-env"    // 增加ES6的 babel prest配置
++   "@babel/preset-react"  // 增加 React 的 babel preset配置
   ],
   "plugins": [
     "@babel/proposal-class-properities"
@@ -274,18 +278,18 @@ module.exports = {
   entry: './src/index.js',
   module: {
     rules: [
-+      {
-+        test: /\.css$/,
-+        use: ['style-loader', 'css-loader']  // loader是链式调用，从右到左，注意顺序
-+      },
-+  		 {
-+        test: /\.less$/,
-+        use: ['style-loader', 'css-loader', 'less-loader'] 
-+      },
-+  		 {
-+        test: /\.scss$/,
-+        use: ['style-loader', 'css-loader', 'sass-loader'] 
-+      }
++     {
++       test: /\.css$/,
++       use: ['style-loader', 'css-loader']  // loader是链式调用，从右到左，注意顺序
++     },
++  		{
++       test: /\.less$/,
++       use: ['style-loader', 'css-loader', 'less-loader'] 
++     },
++  		{
++       test: /\.scss$/,
++       use: ['style-loader', 'css-loader', 'sass-loader'] 
++     }
     ]
   }
 }
@@ -317,14 +321,14 @@ module.exports = {
   entry: './src/index.js',
   module: {
     rules: [
-+      {
-+        test: /\.(png|jpg|gif|jpeg)$/,
-+        use: 'file-loader' 
-+      },
-+      {
-+        test: /\.(woff|woff2|eot|ttf|otf)$/,
-+        use: 'file-loader' 
-+      }
++     {
++       test: /\.(png|jpg|gif|jpeg)$/,
++       use: 'file-loader' 
++     },
++     {
++       test: /\.(woff|woff2|eot|ttf|otf)$/,
++       use: 'file-loader' 
++     }
     ]
   }
 }
@@ -360,15 +364,15 @@ module.exports = {
   entry: './src/index.js',
   module: {
     rules: [
-+      {
-+        test: /\.(png|jpg|gif|jpeg)$/,
-+        use: [{
-+  					loader: 'url-loader',
-+						options: {
-+  						limit: 10240    // 单位为字节， 即资源小于10k时，webpack打包时会自动 base64
-+						}
-+					}]
-+      }
++     {
++       test: /\.(png|jpg|gif|jpeg)$/,
++       use: [{
++        loader: 'url-loader',
++        options: {
++          limit: 10240    // 单位为字节， 即资源小于10k时，webpack打包时会自动 base64
++        }
++      }]
++    }
     ]
   }
 }
@@ -469,6 +473,7 @@ webpack 构建出来的 bundle.js 本身是不具备热更新的能力的，HotM
 
 
 <hr/>
+
 ### 5. Webpack 基础用法四： 其他
 
 ##### 5.1 文件指纹
@@ -567,6 +572,7 @@ module.exports = {
 
 
 <hr/>
+
 ### 6. Webpack 进阶用法
 
 ##### 6.1 自动清理构建目录产物
@@ -612,25 +618,25 @@ module.exports = {
   entry: './src/index.js',
   module: {
     rules: [
-  		 {
-	       test: /\.scss$/,
-         use: [
-  					'style-loader', 
-  					'css-loader', 
-  					'sass-loader',
-+  					{
-+  						loader: 'postcss-loader',
-+  						options: {
-+  							plugins: () => [
-+      						require('autoprefixer')({
-+    							// 设置兼容的浏览器版本，最近两个版本，使用率>1%， 以及 ios7 以上
-+										 browsers: ['last 2 version', '>1%', 'ios 7']  
-+  								})
-+						   ]
-+							}
-+						}
-  			 ] 
-       }
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader', 
+          'css-loader', 
+          'sass-loader',
++         {
++           loader: 'postcss-loader',
++           options: {
++           plugins: () => [
++             require('autoprefixer')({
++               // 设置兼容的浏览器版本，最近两个版本，使用率>1%， 以及 ios7 以上
++               browsers: ['last 2 version', '>1%', 'ios 7']  
++             })
++           ]
++         }
++       }
+      ] 
+     }
     ]
   }
 }

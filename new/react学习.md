@@ -260,7 +260,7 @@ JSX只是`React.createElement(component, props,...children)`函数的语法糖�
 
 * `props.children` 是包含在开始和结束标签之间的JSX表达式的内容
 
-* 需要注意，有一些**"falsy"**的值，如数字`"0"`，仍会被react渲染，要是想解决这个问题，要确保**"&&"**之前的表达式总是布尔值
+* 需要注意，有一些 **"falsy"** 的值，如数字`"0"`，仍会被react渲染，要是想解决这个问题，要确保 **"&&"** 之前的表达式总是布尔值
 
   ```js
   <div>
@@ -430,7 +430,7 @@ class CustomTextInput extends React.Component {
 
 #### 13. Render Props
 
-`render prop`是指在React组件之间使用**`值为函数的prop`**共享代码的简单技术。
+`render prop`是指在React组件之间使用 **`值为函数的prop`** 共享代码的简单技术。
 
 具有render prop的组件接受一个函数，调用该函数则返回一个React元素。
 
