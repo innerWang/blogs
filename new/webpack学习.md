@@ -43,7 +43,6 @@ npm run build  //则会自动去node_modules中去寻找webpack
 
 
 <hr/>
-
 ### 2. Webpack 基础用法一： 基础概念
 
 ##### 2.1 Entry 
@@ -117,12 +116,12 @@ Loaders 本身是一个函数，接受源文件作为参数，返回转换的结
 
 ###### 2.3.1 常见的Loaders
 
-| 名称          | 描述                             |
-| -| - |
+| 名称          | 描述|
+| :-| :- |
 | babel-loader  | 转换ES6、ES7等JS新特性语法       |
 | css-loader    | 支持.css文件的加载和解析         |
 | less-loader   | 将less文件转换成css              |
-| ts-loader     | 将 TS 转换为 JS                  |
+| ts-loader     | 将 TS 转换为 JS            |
 | file-loader   | 进行图片、字体等富媒体文件的打包 |
 | raw-loader    | 将文件以字符串形式导入           |
 | thread-loader | 多进程打包 JS 和 CSS             |
@@ -155,15 +154,16 @@ Plugins 作用于整个构建过程。
 
 ###### 2.4.1 常见的 Plugins 有哪些？
 
-| 名称                     | 描述                                                         |
-| ------------------------ | ------------------------------------------------------------ |
+| 名称| 描述 |
+| :- |:- |
 | CommonsChunkPlugin       | 将chunks相同的模块代码提取成公共js<br />(将不同页面引用的相同的js模块提取为公共的) |
-| CleanWebpackPlugin       | 清理构建目录                                                 |
+| CleanWebpackPlugin       | 清理构建目录  |
 | ExtractTextWebpackPlugin | 将CSS文件从bundle.js文件中提取成一个独立的css文件            |
 | CopyWebpackPlugin        | 将文件或者文件夹拷贝到构建的输出目录                         |
 | HtmlWebpackPlugin        | 创建html文件去承载输出的bundle，常用于多页面打包，可自动生成`*.html`文件，而不需要手动去 dist/ 目录中新建一个 `*.html`文件 |
 | UglifyjsWebpackPlugin    | 压缩JS                                                       |
-| ZipWebpackPlugin         | 将打包出的资源生成一个zip包                                  |
+| ZipWebpackPlugin         | 将打包出的资源生成一个zip包 |
+
 
 ###### 2.4.2 使用 plugins
 
@@ -194,8 +194,8 @@ mode 是 webpack4 才提出的概念。
 
 ##### 2.5.1 mode的内置函数功能
 
-| 选项        | 描述 |
-| - | - |
+| 选项 | 描述 |
+| :--- | :--- |
 | development | 设置 `process.env.NODE_ENV`的值为 `development`.<br />开启`NamedChunksPlugin` 和`NamedModulePlugin`，可以在代码热更新阶段在控制台打印是哪个模块发生了热更新，以及打印模块的路径。 |
 | production  | 设置 `process.env.NODE_ENV`的值为 `production`.<br />开启`FlagDependencyUsagePlugin` ,`FlagIncludedChunksPlugin`,等。。。<br />此时webpack 会默认去压缩，检测变量是否有副作用等等。 |
 | none        | 不开启任何优化选项  |
@@ -203,6 +203,7 @@ mode 是 webpack4 才提出的概念。
 
 
 <hr/>
+
 
 ### 3. Webpack基础用法二： 资源解析
 
@@ -473,7 +474,6 @@ webpack 构建出来的 bundle.js 本身是不具备热更新的能力的，HotM
 
 
 <hr/>
-
 ### 5. Webpack 基础用法四： 其他
 
 ##### 5.1 文件指纹
@@ -551,16 +551,22 @@ module.exports = {
 ```js
 module.exports = {
   plugins: [
-+   new HtmlWebpackPlugin({										// 一个页面对应一个HtmlWebpackPlugin
-+     template: path.join(__dirname, 'src/search.html'),    //模板所在位置，可使用ejs语法
-+     filename: 'search.html',                              //打包出来的文件名称
-+     chunks:['search'],                                    //生成的html需要的模块
-+     inject: true,																					// css和js会被插入 html
+    // 一个页面对应一个HtmlWebpackPlugin
++   new HtmlWebpackPlugin({
+      //模板所在位置，可使用ejs语法
++     template: path.join(__dirname, 'src/search.html'), 
+      //打包出来的文件名称
++     filename: 'search.html', 
+      //生成的html需要的模块
++     chunks:['search'], 
+      // css和js会被插入 html
++     inject: true,					
 +     minify:{
 +       html5: true,
 +       collapseWhitespace:true,
 +       preserveLineBreaks: false,
-+       minifyCSS: true,       // 用于压缩一开始就内联在html中的css和js，而不是打包生成的css和js
+        // 用于压缩一开始就内联在html中的css和js，而不是打包生成的css和js
++       minifyCSS: true,       
 +       minifyJS: true,
 +       removeComments: false
 +     }
@@ -572,7 +578,6 @@ module.exports = {
 
 
 <hr/>
-
 ### 6. Webpack 进阶用法
 
 ##### 6.1 自动清理构建目录产物
