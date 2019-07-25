@@ -282,11 +282,11 @@ module.exports = {
 +       test: /\.css$/,
 +       use: ['style-loader', 'css-loader']  // loader是链式调用，从右到左，注意顺序
 +     },
-+  		{
++     {
 +       test: /\.less$/,
 +       use: ['style-loader', 'css-loader', 'less-loader'] 
 +     },
-+  		{
++     {
 +       test: /\.scss$/,
 +       use: ['style-loader', 'css-loader', 'sass-loader'] 
 +     }
@@ -395,9 +395,9 @@ Webpack 开启监听模式有两种方式：
 
 文件监听的原理分析：
 
- 	轮询判断文件的最后编辑时间是否变化，
+轮询判断文件的最后编辑时间是否变化，
 
-​	 某个文件发生了变化，并不会立刻告诉监听者，而是先缓存起来(放在本地磁盘)，等 aggregateTimeout
+某个文件发生了变化，并不会立刻告诉监听者，而是先缓存起来(放在本地磁盘)，等 aggregateTimeout
 
 ```js
 module.export = {
@@ -459,10 +459,10 @@ WDM将 webpack 输出的文件传输给服务器，适用于灵活的定制场�
 
 ![](./images/webpack热更新原理.png)
 
-	-  第一次build完成，流程参考 `1---> 2---> A---> B`
-	-  后续代码发生变化，流程参考 `1---> 2---> 3---> 4`
+* 第一次build完成，流程参考 `1---> 2---> A---> B`
+* 后续代码发生变化，流程参考 `1---> 2---> 3---> 4`
 
-这里面的热更新有最核心的是 HMR Server 和 HMR runtime。
+这里面的热更新有最核心的是 **HMR Server** 和 **HMR runtime**。
 
 HMR Server 是服务端，用来将变化的 js 模块通过 websocket 的消息通知给浏览器端。
 
