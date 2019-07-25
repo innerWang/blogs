@@ -390,8 +390,8 @@ module.exports = {
 
 Webpack 开启监听模式有两种方式：
 
-	* 启动 webpack 命令时，带上 `--watch` 参数 ,  
-	* 在配置 webpack.config.js 中设置`watch: true`
+* 启动 webpack 命令时，带上 `--watch` 参数 ,  
+* 在配置 webpack.config.js 中设置`watch: true`
 
 文件监听的原理分析：
 
