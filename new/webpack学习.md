@@ -42,7 +42,8 @@ npm run build  //则会自动去node_modules中去寻找webpack
 
 
 
-<hr><br>
+<br><hr><br>
+
 ### 2. Webpack 基础用法一： 基础概念
 
 ##### 2.1 Entry 
@@ -202,8 +203,7 @@ mode 是 webpack4 才提出的概念。
 
 
 
-<hr><br>
-
+<br><hr><br>
 
 ### 3. Webpack基础用法二： 资源解析
 
@@ -381,7 +381,7 @@ module.exports = {
 
 
 
-<hr><br>
+<br><hr><br>
 
 ### 4. Webpack 基础用法三： 热更新
 
@@ -473,9 +473,7 @@ webpack 构建出来的 bundle.js 本身是不具备热更新的能力的，HotM
 
 
 
-<hr><br>
-
-
+<br><hr><br>
 
 ### 5. Webpack 基础用法四： 其他
 
@@ -580,9 +578,7 @@ module.exports = {
 
 
 
-<hr><br>
-
-
+<br><hr><br>
 
 ### 6. Webpack 进阶用法
 
@@ -665,7 +661,7 @@ module.exports = {
 
 
 
-<hr><br>
+<br><hr><br>
 
 
 

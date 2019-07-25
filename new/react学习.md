@@ -16,7 +16,7 @@ onSubmit = () => console.log(this.fileInput.current.files[0].name)
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 2. React哲学
 
@@ -35,7 +35,7 @@ this.setState() 的第一个参数可以有两种形式：
 * 是一个对象，`{}` 表示新的状态 
 * 是一个函数，` (prevState, props) => {}`，此时第一个参数是上一个state，第二个参数是此次更新被应用时的props。 
 
-<hr><br>
+<br><hr><br>
 
 #### 3. 代码分割
 
@@ -49,7 +49,7 @@ this.setState() 的第一个参数可以有两种形式：
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 4. Context API
 
@@ -146,7 +146,7 @@ function D(props) {
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 5. 错误边界
 
@@ -155,7 +155,7 @@ function D(props) {
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 6.  Refs Forward （转发 Ref）
 
@@ -186,7 +186,7 @@ function FatherComp(){
 * 第二个参数 `ref` 只在使用 `React.forwardRef` 定义组件时存在。常规函数和 class 组件不接收 `ref` 参数，且 props 中也不存在 `ref`。
 * Ref 转发不仅限于 DOM 组件(如上述的`<button>`)，你也可以转发 refs 到 class 组件实例中。
 
-<hr><br>
+<br><hr><br>
 
 #### 7.  `<Fragment>`
 
@@ -198,7 +198,7 @@ function FatherComp(){
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 8. 高阶组件HOC  —— ——  需要多看几遍！！！！
 
@@ -238,7 +238,7 @@ function FatherComp(){
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 9. 深入JSX
 
@@ -283,7 +283,7 @@ JSX只是`React.createElement(component, props,...children)`函数的语法糖�
 
   
 
-<hr><br>
+<br><hr><br>
 
 #### 10. 性能优化
 
@@ -300,7 +300,7 @@ JSX只是`React.createElement(component, props,...children)`函数的语法糖�
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 11. Portals
 
@@ -327,7 +327,7 @@ render() {
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 12. Refs和DOM
 
@@ -426,7 +426,7 @@ class CustomTextInput extends React.Component {
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 13. Render Props
 
@@ -440,7 +440,7 @@ class CustomTextInput extends React.Component {
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 14. 静态类型检查
 
@@ -454,7 +454,7 @@ class CustomTextInput extends React.Component {
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 15.  严格模式(`<React.StrictMode>`)
 
@@ -462,7 +462,7 @@ class CustomTextInput extends React.Component {
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 16. 使用PropTypes类型检查
 
@@ -494,7 +494,7 @@ ReactDOM.render(<Greeting />, document.getElementById('example'));
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 17. 非受控组件
 
@@ -514,7 +514,7 @@ ReactDOM.render(<Greeting />, document.getElementById('example'));
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 18.   SPA单页应用的前端路由
 
@@ -557,7 +557,7 @@ history.pushState() 和 history.replaceState() 可以改变 url 同时，不会�
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 19.  React 的API
 
@@ -658,7 +658,7 @@ Hook作为React 16.8的新增特性，可以在不编写class的情况下使用s
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 20.  ReactDOM
 
@@ -693,7 +693,7 @@ ReactDOM.createPortal(child, container)
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 21.  DOM元素
 
@@ -715,7 +715,7 @@ React与html的属性差异
 
 
 
-<hr><br>
+<br><hr><br>
 
 #### 22. 合成事件(SyntheticEvent)
 
@@ -727,7 +727,7 @@ React与html的属性差异
 
 
 
-<hr><br>
+<br><hr><br>
 
 
 
@@ -743,7 +743,7 @@ React与html的属性差异
 
 
 
-<hr><br>
+<br><hr><br>
 
 
 
@@ -755,7 +755,7 @@ React与html的属性差异
 
 
 
-<hr><br>
+<br><hr><br>
 
 
 
