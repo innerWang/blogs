@@ -171,8 +171,8 @@ const FancyButton = React.forwardRef((props, ref) => (
 
 function FatherComp(){
   // 你可以直接获取 DOM button 的 ref：
-	const ref = React.createRef();
-	return (
+  const ref = React.createRef();
+  return (
     <FancyButton ref={ref}>Click me! </FancyButton>
   )
 }
@@ -187,6 +187,7 @@ function FatherComp(){
 * Ref 转发不仅限于 DOM 组件(如上述的`<button>`)，你也可以转发 refs 到 class 组件实例中。
 
 <hr>
+
 #### 7.  `<Fragment>`
 
 `<Fragment>`允许将子列表进行分组而无需增加额外的DOM标签
@@ -198,7 +199,9 @@ function FatherComp(){
 
 
 <hr>
+
 #### 8. 高阶组件HOC  —— ——  需要多看几遍！！！！
+
 
 高阶组件是，参数为组件，返回一个新组件的函数。
 
@@ -236,7 +239,9 @@ function FatherComp(){
 
 
 <hr>
+
 #### 9. 深入JSX
+
 
 JSX只是`React.createElement(component, props,...children)`函数的语法糖。
 
@@ -247,8 +252,8 @@ JSX只是`React.createElement(component, props,...children)`函数的语法糖�
 * 如果没给prop赋值，则其默认值为true，如下两个式子等价。
 
   ```js
-  	<MyTextBox autocomplete />
-  	<MyTextBox autocomplete={true} />
+  <MyTextBox autocomplete />
+  <MyTextBox autocomplete={true} />
   ```
 
   
@@ -279,7 +284,9 @@ JSX只是`React.createElement(component, props,...children)`函数的语法糖�
   
 
 <hr>
+
 #### 10. 性能优化
+
 
 * 构建优化
 
@@ -307,7 +314,7 @@ ReactDOM.createPortal(child, container)  // child为子节点，container为DOM�
 
 ```js
 render() {
-  // React 并*没有*创建一个新的 div。它只是把子元素渲染到 `domNode` 中。
+  // React 并没有创建一个新的 div。它只是把子元素渲染到 `domNode` 中。
   // `domNode` 是一个可以在任何位置的有效 DOM 节点。
   return ReactDOM.createPortal(
     this.props.children,
@@ -320,9 +327,10 @@ render() {
 
 
 
-
 <hr>
+
 #### 12. Refs和DOM
+
 
 ##### 1. 创建Refs
 
@@ -354,7 +362,8 @@ class MyComponent extends React.Component {
 
 `ref`属性用于 **HTML元素 / 自定义class组件** 时，`ref`对象接收 **底层DOM元素 / 组件的挂载实例** 作为`current`属性。
 
-**！！！函数组件没有实例，所以不可以在函数组件上使用ref属性！！！ **但是可以在函数组件内部使用ref属性，但是这个ref属性只能和DOM元素或者class组件进行绑定。
+
+**！！！函数组件没有实例，所以不可以在函数组件上使用ref属性！！！** 但是可以在函数组件内部使用ref属性，但是这个ref属性只能和DOM元素或者class组件进行绑定。
 
 ```js
 function CompA(){
@@ -520,7 +529,7 @@ SPA 是 single page web application 的简称，译为单页Web应用。 SPA 就
 
 ##### 1. Hash 模式
 
-​	hash指的是url之后的**`#`**号以及后面的字符。hash值的改变不会导致浏览器像服务器发送请求。**而且 hash 的改变会触发 hashchange 事件，浏览器的前进后退也能对其进行控制。**
+​	hash指的是url之后的 **`#`** 号以及后面的字符。hash值的改变不会导致浏览器像服务器发送请求。**而且 hash 的改变会触发 hashchange 事件，浏览器的前进后退也能对其进行控制。**
 
 
 
@@ -534,9 +543,9 @@ history.replaceState(); // 用新的状态代替当前状态, 会将历史记录
 history.state                // 返回当前状态对象
 ```
 
-​     history.pushState() 和 history.replaceState() 可以改变 url 同时，不会刷新页面，所以在 HTML5 中的 histroy 具备了实现前端路由的能力。
+history.pushState() 和 history.replaceState() 可以改变 url 同时，不会刷新页面，所以在 HTML5 中的 histroy 具备了实现前端路由的能力。
 
-​	**history 的改变并不会触发任何事件，所以我们无法直接监听 history 的改变而做出相应的改变。**因此手动控制时，需要罗列出可能触发history改变的所有情况，并进行拦截，变相监听history的改变。
+​**history 的改变并不会触发任何事件，所以我们无法直接监听 history 的改变而做出相应的改变。** 因此手动控制时，需要罗列出可能触发history改变的所有情况，并进行拦截，变相监听history的改变。
 
 
 
