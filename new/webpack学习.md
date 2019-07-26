@@ -1,6 +1,6 @@
 # Webpack学习
 
-### 1. 安装webpack
+## 1. 安装webpack
 
 由于webpack4开始，将webpack内核以及webpack-cli分开了，所以使用时需要同时安装webpack以及webpack-cli
 
@@ -10,7 +10,7 @@ yarn add webpack webpack-cli -D
 ./node_modules/.bin/webpack -v  //可以查看项目中安装的webpack的版本
 ```
 
-##### 1.1 简要使用webpack
+### 1.1 简要使用webpack
 
 创建一个`webpack.config.js`文件，
 
@@ -44,15 +44,15 @@ npm run build  //则会自动去node_modules中去寻找webpack
 
 <br><hr><br>
 
-### 2. Webpack 基础用法一： 基础概念
+## 2. Webpack 基础用法一： 基础概念
 
-##### 2.1 Entry 
+### 2.1 Entry 
 
 webpack中会将代码以及非代码如图片、字体依赖等加到依赖图中，依赖图的入口是**Entry**。对应于源代码。
 
 webpack会根据入口文件去寻找依赖，将依赖都加入依赖树，根据依赖树打包生成最后的文件。
 
-###### 2.1.1 单入口： entry是一个字符串， 适用于单页应用
+#### 2.1.1 单入口： entry是一个字符串， 适用于单页应用
 
 ```
 module.exports = {
@@ -60,7 +60,7 @@ module.exports = {
 }
 ```
 
-###### 2.1.2 多入口： entry是一个对象，适用于多页应用
+#### 2.1.2 多入口： entry是一个对象，适用于多页应用
 
 ```js
 module.exports = {
@@ -73,11 +73,11 @@ module.exports = {
 
 
 
-##### 2.2 Output
+### 2.2 Output
 
 Output 用来告诉webpack如何将编译后的文件输出到磁盘。对应于结果代码。
 
-###### 2.2.1 单入口
+#### 2.2.1 单入口
 
 ```js
 module.exports = {
@@ -89,7 +89,7 @@ module.exports = {
 }
 ```
 
-###### 2.2.2 多入口
+#### 2.2.2 多入口
 
 ```js
 module.exports = {
@@ -109,13 +109,13 @@ build之后，就可以在 `/dist` 目录发现`index.js`以及`search.js`
 
 
 
-##### 2.3 Loaders
+### 2.3 Loaders
 
 Webpack 开箱即用只支持 JS 和 JSON 两种文件类型，通过Loaders 去支持其它文件类型并且把它们转化为有效的模块，并且可以添加到依赖图中。
 
 Loaders 本身是一个函数，接受源文件作为参数，返回转换的结果。
 
-###### 2.3.1 常见的Loaders
+#### 2.3.1 常见的Loaders
 
 | 名称          | 描述|
 | :-| :- |
@@ -127,7 +127,7 @@ Loaders 本身是一个函数，接受源文件作为参数，返回转换的结
 | raw-loader    | 将文件以字符串形式导入           |
 | thread-loader | 多进程打包 JS 和 CSS             |
 
-###### 2.3.2 Loaders的用法
+#### 2.3.2 Loaders的用法
 
 ```js
 module.exports = {
@@ -147,13 +147,13 @@ module.exports = {
 
 
 
-##### 2.4 Plugins
+### 2.4 Plugins
 
 Plugins（插件）用于打包输出的bundle.js文件的优化，资源管理和环境变量注入，
 
 Plugins 作用于整个构建过程。
 
-###### 2.4.1 常见的 Plugins 有哪些？
+#### 2.4.1 常见的 Plugins 有哪些？
 
 | 名称| 描述 |
 | :- |:- |
@@ -166,7 +166,7 @@ Plugins 作用于整个构建过程。
 | ZipWebpackPlugin         | 将打包出的资源生成一个zip包 |
 
 
-###### 2.4.2 使用 plugins
+#### 2.4.2 使用 plugins
 
 ```js
 module.exports = {
@@ -183,7 +183,7 @@ module.exports = {
 
 
 
-##### 2.5 mode
+### 2.5 mode
 
 Mode 用于指定当前的构建环境是： production、development 还是none
 
@@ -191,9 +191,7 @@ Mode 用于指定当前的构建环境是： production、development 还是none
 
 mode 是 webpack4 才提出的概念。
 
-
-
-##### 2.5.1 mode的内置函数功能
+#### 2.5.1 mode的内置函数功能
 
 | 选项 | 描述 |
 | :--- | :--- |
@@ -205,9 +203,9 @@ mode 是 webpack4 才提出的概念。
 
 <br><hr><br>
 
-### 3. Webpack基础用法二： 资源解析
+## 3. Webpack基础用法二： 资源解析
 
-##### 3.1 解析 ES6和React JSX
+### 3.1 解析 ES6和React JSX
 
 使用 **babel-loader**, 增加webpack配置如下：
 
@@ -264,7 +262,7 @@ yarn add @babel/preset-react -D
 
 
 
-##### 3.2 解析css、less 以及 scss
+### 3.2 解析css、less 以及 scss
 
 * less-loader 用于将 .less 转换为 .css
 
@@ -311,7 +309,7 @@ yarn add node-sass sass-loader -D   // sass-loader 依赖于 node-sass
 
 
 
-##### 3.3 解析图片和字体
+### 3.3 解析图片和字体
 
 * file-loader 用于处理文件(图片，字体等)
 
@@ -383,9 +381,9 @@ module.exports = {
 
 <br><hr><br>
 
-### 4. Webpack 基础用法三： 热更新
+## 4. Webpack 基础用法三： 热更新
 
-##### 4.1 webpack中的文件监听
+### 4.1 webpack中的文件监听
 
 文件监听是在发现源码发生变化时，自动重新构建出新的输出文件。但是需要需要手动刷新浏览器
 
@@ -418,7 +416,7 @@ module.export = {
 
 
 
-##### 4.2  webpack的热更新
+### 4.2  webpack的热更新
 
 使用  **`webpack-dev-server(wds)`**, 主要用于开发环境
 
@@ -444,13 +442,13 @@ module.exports = {
 
 
 
-##### 4.3  使用 webpack-dev-middleware
+### 4.3  使用 webpack-dev-middleware
 
 WDM将 webpack 输出的文件传输给服务器，适用于灵活的定制场景.
 
 
 
-##### 4.4 热更新的原理分析
+### 4.4 热更新的原理分析
 
 - Webpack Compile : 将 JS 编译成 bundle.js
 - HMR Server: 将热更新的文件输出给 HMR Runtime
@@ -475,19 +473,19 @@ webpack 构建出来的 bundle.js 本身是不具备热更新的能力的，HotM
 
 <br><hr><br>
 
-### 5. Webpack 基础用法四： 其他
+## 5. Webpack 基础用法四： 其他
 
-##### 5.1 文件指纹
+### 5.1 文件指纹
 
 文件指纹指的是： 打包后输出文件名的后缀， 用于做版本管理。
 
-###### 5.5.1 常见的文件指纹
+#### 5.5.1 常见的文件指纹
 
 - **Hash**:  和整个项目的构建有关，只要项目文件有更改，整个项目构建的hash值就会更改
 - **Chunkhash**： 和webpack打包的chunk(模块) 有关，不同的entry会生成不同的chunkhash值
 - **Contenthash**:  根据文件内容来定义 hash，文件内容不变，则contenthash不变，如css文件
 
-###### 5.5.2 JS文件指纹的设置
+#### 5.5.2 JS文件指纹的设置
 
 * 设置output的filename，使用[chunkhash]
 
@@ -519,13 +517,13 @@ module.exports = {
 
 
 
-##### 5.2 代码压缩
+### 5.2 代码压缩
 
-###### 5.2.1 js文件的压缩
+#### 5.2.1 js文件的压缩
 
 Webpack4 内置了 uglifyjs-webpack-plugin，所以默认打包出来的js文件是经过压缩了的。但是也可以手动安装该插件，设置其他压缩参数，例如并行压缩等。
 
-###### 5.2.2 css文件的压缩
+#### 5.2.2 css文件的压缩
 
  webpack3可以使用设置`css-loader`的minify来进行css的压缩，但是css-loader-v1.0后去掉了这个参数，所以需要采用其他方式进行压缩：
 
@@ -542,7 +540,7 @@ module.exports = {
 }
 ```
 
-###### 5.2.3 html文件的压缩
+#### 5.2.3 html文件的压缩
 
 * 使用 html-webpack-plugin，设置压缩参数
   * bundle:  打包最终生成的文件
@@ -580,9 +578,9 @@ module.exports = {
 
 <br><hr><br>
 
-### 6. Webpack 进阶用法
+## 6. Webpack 进阶用法
 
-##### 6.1 自动清理构建目录产物
+### 6.1 自动清理构建目录产物
 
 * 通过 npm scripts 清理构建目录
 
@@ -605,16 +603,16 @@ module.exports = {
 
   
 
-##### 6.2 CSS功能增强
+### 6.2 CSS功能增强
 
-###### 6.2.1 css3的属性为什么需要前缀？
+#### 6.2.1 css3的属性为什么需要前缀？
 
 * 以IE为代表的使用 **Trident 内核**的浏览器，其css需要加上 **-ms**的前缀
 * 以Firefox 为代表的使用 **Geko内核**，其css需要加上**-moz** 
 * 以Chrome为代表使用 **Webkit内核**，其css需要加上 **-webkit**
 * 以Opera为代表使用 **Presto内核**，其css需要加上 **-o**
 
-###### 6.2.2 使用 PostCSS插件autoprefixer自动补全css3的前缀
+#### 6.2.2 使用 PostCSS插件autoprefixer自动补全css3的前缀
 
 ```js
 // 安装依赖 
@@ -653,7 +651,123 @@ module.exports = {
 
 
 
+<br><hr><br>
 
+### 6.3 移动端 px 自动转成 rem
+
+原先采用CSS媒体查询实现响应式布局：根据屏幕大小修改样式，需要编写多套适配样式的代码。
+
+css3 提出 rem的单位，指的是根元素的font-size的大小。rem是一个相对单位，而px 是一个绝对单位。
+
+* 使用 `px2rem-loader`将px转换为 rem
+* 在页面渲染时使用手淘的`lib-flexible`库计算根元素的font-size的值。
+
+
+```js
+// 安装依赖
+yarn add px2rem-loader -D
+yarn add lib-flexible
+
+// 修改 webpack.config.js
+module.exports = {
+  entry: './src/index.js',
+  module: {
+    rules: [
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader', 
+          'css-loader', 
++         {
++           loader: 'px2rem-loader',
++           options: {
++             remUnit: 75,  // 1rem=75px,适合750的设计稿
++             remPrecision: 8  // px转换为rem时小数的位数
++           }
++         }
+        ] 
+      }
+    ]
+  }
+}
+
+
+// 内联flexible.js 库，将js和css前置放在html的头部中，不要放到js中去进行打包
+// 因为需要页面一打开马上进行计算
+
+```
+
+px2rem-loader 只是以构建的手段将 px 单位转换成了 rem。但是 rem 和 px 的单位计算并不清楚，flexible.js 的作用就是动态的去计算不同设备下的 rem 相对 px 的单位，也就是计算根元素 html 节点的 font-size 大小。
+
+
+<br><hr><br>
+
+
+### 6.4 静态资源的内联
+
+资源内联的意义：
+* 代码层面
+  * 页面框架的初始化脚本
+  * 上报相关的点
+  * CSS 内联避免页面闪动
+* 请求层面： 减少HTTP网络请求数
+  * 小图片或者字体内联(url-loader)
+
+#### 6.4.1 HTML 和 JS 的内联
+
+```js
+// raw-loader 内联 html, 之所以可以使用这种语法，是因为使用了 html-webpack-plugin,支持ejs语法
+${require('raw-loader!./meta.html')}
+
+// raw-loader 内联 JS
+<script>${require('raw-loader!babel-loader!../../node_modules/lib-flexible/flexible.js')} </script>
+
+```
+注： raw-loader  需要使用 0.5.1版本，最新版本的 raw-loader 使用了导出模块的时候使用了 export default 语法， html 里面用的话有问题。
+  ```js
+    yarn add raw-loader@0.5.1 -D
+  ```
+
+
+#### 6.4.2 CSS内联
+
+* 使用 style-loader
+  ```js
+    module.exports = {
+      module:{
+        rules:[
+          {
+            test: /\.scss$/,
+            use: [
+              {
+                loader: 'style-loader',
+                options: {
+                  insertAt: 'top', //样式插入到<head>
+                  singleton: true, //将所有的style标签合并成一个
+                }
+              },
+              'css-loader',
+              'sass-loader'
+            ]
+          }
+        ]
+      }
+    }
+  ```
+* 使用 html-inline-css-webpack-plugin
+
+
+<br><hr><br>
+
+
+
+
+
+<br><hr><br>
+
+
+
+<br><hr><br>
 
 
 
