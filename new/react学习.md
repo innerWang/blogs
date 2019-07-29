@@ -719,6 +719,160 @@ React与html的属性差异
 
 #### 22. 合成事件(SyntheticEvent)
 
+`SyntheticEvent` 实例作为浏览器的原生事件的跨浏览器包装器，除兼容所有浏览器外，它还拥有和浏览器原生事件相同的接口，包括 `stopPropagation()` 和 `preventDefault()`。若想使用浏览器的底层事件，则可以通过`nativeEvent`属性获取。
+
+`SyntheticEvent` 由于是合并而来，会被重用，`SyntheticEvent` 的所有属性会在触发事件的回调函数被调用后无效，所以不支持异步访问，若你想异步访问事件属性，你需在事件上调用 `event.persist()`，此方法会从池中移除合成事件，允许用户代码保留对事件的引用。
+
+默认是在冒泡阶段触发事件处理函数，若想在捕获阶段触发，则需要使用 `onClickCapture`，而不是 `onClick` 。
+
+
+
+
+
+
+
+
+
+<br><hr><br>
+
+#### 23. React Hook
+
+Hook 是 React 16.8 的新增特性。
+* 只能在函数的最外层调用 Hook
+* 只能在React的函数组件中调用 Hook
+
+##### 1. useState()
+
+`useState` 可通过在函数组件中调用它来给组件添加一些内部的state, React会在重复渲染时保留这个state。`useState` 的唯一参数就是**initialState** ，这个 **initialState** 参数只有在**第一次渲染**时会被用到。
+
+ state 只在组件首次渲染的时候被创建。在下一次重新渲染时，useState 返回给我们当前的 state。
+
+ * setState 的函数式更新
+
+    如果新的 state 需要通过使用先前的 state 计算得出，那么可以将函数传递给 setState。该函数将接收先前的 state，并返回一个更新后的值。避免了显示引用当前的state。
+
+    ```js
+      function Counter({initialCount}) {
+        const [count, setCount] = useState(initialCount);
+        return (
+          <>
+            Count: {count}
+            <button onClick={() => setCount(initialCount)}>Reset</button>
+            <button onClick={() => setCount(prevCount => prevCount + 1)}>+</button>
+            <button onClick={() => setCount(prevCount => prevCount - 1)}>-</button>
+          </>
+        );
+      }
+    ```
+
+    与 class 组件中的 setState 方法不同，useState 不会自动合并更新对象。你可以用函数式的 setState 结合展开运算符来达到合并更新对象的效果。
+
+    ```js
+      setState(prevState => {
+        // 也可以使用 Object.assign
+        return {...prevState, ...updatedValues};
+      });
+    ```
+
+
+ ##### 2. useEffect()
+
+ `Effect Hook` 可以在函数组件中执行副作用(改变 DOM、添加订阅、设置定时器、记录日志等操作)。useEffect 会在每次渲染后都执行，React 保证了每次运行effect(effect 即为传递给useEffect()的函数)的同时，DOM已经更新完毕。
+
+ 一旦 effect 的依赖发生变化，它就会被重新创建。**即每次我们重新渲染，都会生成新的 effect，替换掉之前的**，传递给 useEffect 的函数每次都不同，这样才可以保证每次都可以获取最新的数据。
+
+当effect是订阅外部数据源时，需要进行清除操作(如取消订阅等)，以防内存泄露。如果 effect 返回了一个函数，React 则会在组件卸载时执行effect的清除操作，此时则会调用effect返回的函数。
+
+每次渲染之后都执行清理或执行effect可能会导致性能问题，此时只需要传递数组作为useEffect的第二个可选参数，只有当数组中存放的变量变化时，才会执行清理或执行effect。
+  * 需要确保数组中包含了所有外部作用域中会随时间变化并且在 effect 中使用的变量
+  * 如果想执行只运行一次的 effect（仅在组件挂载和卸载时执行），可以传递一个空数组（[]）作为第二个参数。
+
+
+在useEffect中使用了定时器，只需在return清除定时器的函数即可，因为useEffect在指定参数更新时会先调用 return的函数进行清除操作，再执行新生成的effect。
+
+###### 2.1 **数组中的变量频繁变化时如何操作？**
+
+```js
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCount(c => c + 1); // 不依赖于传入的count变量，引用prevCount
+    }, 1000);
+    return () => clearInterval(id);
+  }, []); // 我们的 effect 不依赖于组件作用域中的任何变量
+
+  return <h1>{count}</h1>;
+}
+```
+如上述示例，effect 原本依赖了count，但是若是直接将count放入effect的数组参数中，则会在count变化时导致定时器被重置，采用函数式更新setState的方式，则可以引用到最新的count，而不用重置定时器。[参考](https://zh-hans.reactjs.org/docs/hooks-faq.html#what-can-i-do-if-my-effect-dependencies-change-too-often)
+
+
+
+##### 3. Hook 规则
+
+使用 `eslint-plugin-react-hooks` 来强制执行**只在最顶层使用Hook**以及**只在React函数中使用Hook**这两条规则。
+```js
+// 安装依赖
+yarn add eslint-plugin-react-hooks -D
+
+// 在ESLint中配置规则
+{
+  "plugins": [
+    "react-hooks"
+  ],
+  "rules": {
+    "react-hooks/rules-of-hooks": "error", // 检查 Hook 的规则
+    "react-hooks/exhaustive-deps": "warn" // 检查 effect 的依赖，此规则会在添加错误依赖时发出警告并给出修复建议。
+  }
+}
+```
+
+React依靠Hook的调用顺序确定state的对应关系： 
+```js
+function Form() {
+  const [name, setName] = useState('Mary');
+
+  useEffect(function persistForm() {
+    localStorage.setItem('formData', name);
+  });
+
+  const [surname, setSurname] = useState('Poppins');
+
+  useEffect(function updateTitle() {
+    document.title = name + ' ' + surname;
+  });
+
+}
+
+
+// 首次渲染
+useState('Mary')           // 1. 使用 'Mary' 初始化变量名为 name 的 state
+useEffect(persistForm)     // 2. 添加 effect 以保存 form 操作
+useState('Poppins')        // 3. 使用 'Poppins' 初始化变量名为 surname 的 state
+useEffect(updateTitle)     // 4. 添加 effect 以更新标题
+
+
+// 二次渲染
+useState('Mary')           // 1. 读取变量名为 name 的 state（参数被忽略）
+useEffect(persistForm)     // 2. 替换保存 form 的 effect
+useState('Poppins')        // 3. 读取变量名为 surname 的 state（参数被忽略）
+useEffect(updateTitle)     // 4. 替换更新标题的 effect
+
+// ...
+```
+
+##### 4. 自定义Hook
+
+可通过自定义Hook 将组件逻辑提取到可重用的函数中。
+
+
+
+##### 5. useContext
+
+
+
 
 
 
@@ -739,6 +893,12 @@ React与html的属性差异
 
 
 
+<br><hr><br>
+
+
+
+
+<br><hr><br>
 
 
 
@@ -750,12 +910,23 @@ React与html的属性差异
 
 
 
+<br><hr><br>
 
 
 
 
 
 <br><hr><br>
+
+
+
+
+<br><hr><br>
+
+
+
+
+
 
 
 
