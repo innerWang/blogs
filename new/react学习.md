@@ -737,7 +737,7 @@ React与html的属性差异
 
 #### 23. React Hook
 
-Hook 是 React 16.8 的新增特性。
+Hook 是 React 16.8 的新增特性。要启用 Hook，所有 React 相关的 package 都必须升级到 16.8.0 或更高版本。如果忘记更新诸如 React DOM 之类的 package，Hook 将无法运行。与class组件的不同在于，函数组件本身即为class 组件的 render()。 
 * 只能在函数的最外层调用 Hook
 * 只能在React的函数组件中调用 Hook
 
@@ -788,7 +788,9 @@ Hook 是 React 16.8 的新增特性。
   * 如果想执行只运行一次的 effect（仅在组件挂载和卸载时执行），可以传递一个空数组（[]）作为第二个参数。
 
 
-在useEffect中使用了定时器，只需在return清除定时器的函数即可，因为useEffect在指定参数更新时会先调用 return的函数进行清除操作，再执行新生成的effect。
+经过测试发现，每次修改内部的state，组件重新渲染时，函数组件内所有的**同步语句会先执行**，然后**执行useEffect中return的清理函数**，最后会**执行effect**。所以若在useEffect中使用了定时器，只需在return的函数中清除定时器即可，**在组件卸载以及组件重新渲染时都会执行 effect 所 return的函数**，所以为了不重复停启定时器，当在useEffect中使用了定时器时，可以采用下述方案。
+
+
 
 ###### 2.1 **数组中的变量频繁变化时如何操作？**
 
@@ -869,59 +871,104 @@ useEffect(updateTitle)     // 4. 替换更新标题的 effect
 
 
 
-##### 5. useContext
+##### 5. useContext()
+useContext 的优势在于在使用context时不需要再使用`<Consumer>`来包裹子组件了。需要注意的是：useContext只是可以让我们读取 context 的值以及订阅 context 的变化。使用时仍然需要在上层组件树中使用 `<MyContext.Provider>` 来为下层组件提供 context。
+
+```js
+// context.js
+import React, { useState } from 'react'
+// 1. 创建 context
+export const myContext = React.createContext()
+
+// 2. 创建 Provider
+export const MyProvider = props => {
+  let [username, handleChangeUsername] = useState('')
+  return (
+    <myContext.Provider value={{username, handleChangeUsername}}>
+      {props.children}
+    </myContext.Provider>
+  )
+}
+
+// 3. 创建 Consumer
+export const MyConsumer = myContext.Consumer
+
+```
+接下来可以在子组件中使用 Context。一定要注意，**useContext的参数是 context 本身！！！**
+
+```js
+import React, { useContext, Fragment }  from 'react' 
+import { MyProvider, myContext } from './context' 
+
+function F1() {
+  const { username, handleChangeUsername } = useContext(myContext);
+  const handleChange = e => {
+    handleChangeUsername(e.target.value);
+  };
+  return (
+    <div>
+      <div>user: {username}</div>
+      <input onChange={handleChange} />
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Fragment>
+      <MyProvider>
+        <F1 />
+      </MyProvider>
+    </Fragment>
+  );
+}
+
+```
+
+##### 6. useReducer()
+useReducer 作为 useState 的替代方案，接收一个形如 (state, action) => newState 的 reducer，并返回当前的 state 以及与其配套的 dispatch 方法。可以将初始值作为第二个参数传入 useReducer，也可以将init函数传入第三个参数，此时初始值则为 **`init(initialArg)`**。
+
+```js
+ const [state, dispatch] = useReducer(reducer, initialArg, init);
+```
 
 
+##### 7. useCallback()
+把回调函数及依赖项数组作为参数传入 useCallback，它将返回该回调函数的 memoized 版本，该回调函数仅在某个依赖项改变时才会更新。
+
+```js
+const memoizedCallback = useCallback(
+  () => doSomething(a, b) ,
+  [a, b],
+);
+```
+
+##### 8. useMemo()
+把“创建”函数和依赖项数组作为参数传入 useMemo，它仅会在某个依赖项改变时才重新计算 memoized 值。注意：传入 useMemo 的函数会在渲染期间执行，所以在该传入函数内部不要进行任何副作用的操作。
+
+```js
+const memoizedValue = useMemo(
+  () => computeExpensiveValue(a, b), 
+  [a, b]
+);
+```
 
 
+##### 9. useRef()
+
+useRef 返回一个可变的 ref 对象，其 .current 属性被初始化为传入的参数（initialValue）。返回的 ref 对象在组件的整个生命周期内保持不变，类似于一个 class 的实例属性。
+
+```js
+  const refContainer = useRef(initialValue);
+```
+
+useRef 创建了一个普通的 JavaScript对象，形如 `{current : ...}`，useRef与直接新建一个这样的对象的区别在于，每次渲染时，useRef返回的是同一个ref对象。
+
+变更 `.current`属性并不会引起组件重新渲染，如果想要在 React 绑定或解绑 DOM 节点的 ref 时运行某些代码，则需要使用回调 ref 来实现。
+
+可以用 useRef 存储上一轮的props和state。
 
 
-
-
-
-
-
-<br><hr><br>
-
-
-
-
-
-
-
-
-
-
-
-<br><hr><br>
-
-
-
-
-<br><hr><br>
-
-
-
-
-<br><hr><br>
-
-
-
-
-
-
-<br><hr><br>
-
-
-
-
-
-<br><hr><br>
-
-
-
-
-<br><hr><br>
 
 
 
