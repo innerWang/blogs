@@ -651,7 +651,7 @@ module.exports = {
 
 
 
-<br><hr><br>
+
 
 ### 6.3 移动端 px 自动转成 rem
 
@@ -700,7 +700,7 @@ module.exports = {
 px2rem-loader 只是以构建的手段将 px 单位转换成了 rem。但是 rem 和 px 的单位计算并不清楚，flexible.js 的作用就是动态的去计算不同设备下的 rem 相对 px 的单位，也就是计算根元素 html 节点的 font-size 大小。
 
 
-<br><hr><br>
+
 
 
 ### 6.4 静态资源的内联
@@ -756,6 +756,181 @@ ${require('raw-loader!./meta.html')}
   ```
 * 使用 html-inline-css-webpack-plugin
 
+
+
+### 6.5 多页面应用打包
+
+多页面是每一次页面跳转的时候，后台服务器都会返回一个新的html文档，每个页面之间是解耦的，对于SEO也更加友好。
+
+#### 6.5.1 多页面打包基本思路
+
+每个页面对应一个`entry`以及一个 `html-webpack-plugin`，这样的话，每次增删页面都需要修改 webpack配置。
+
+可以动态获取 entry和设置html-webpack-plugin的数量：
+* 约定入口文件都为 `src/`目录的直接子目录中的`index.js`，采用js脚本去读取
+* 使用 [glob](https://www.npmjs.com/package/glob) 库
+  ```js
+    // webpack.config.js
+    entry: glob.sync(path.join(__dirname,'./src/*/index.js'))
+  ```
+
+使用示例：
+```js
+// step1: 将入口文件重新组织，改写为 /src/**subDir**/index.js 的形式
+
+// step2: 安装 glob依赖
+yarn add glob -D
+
+// step3 修改 webpack.config.js
+const glob = require('glob')
+const setMPA = () => {
+  const entry = {};
+  const htmlWebpackPlugins = [];
+
+  const entryFiles = glob.sync(path.join(__dirname,'./src/*/index.js'))
+
+  Object.keys(entryFiles).map(idx => {
+    const entryFile = entryFiles[idx]
+    const match = entryFile.match(/src\/(.*)\/index\.js/)
+    const pageName = match && match[1]
+
+    entry[pageName] = entryFile;
+    htmlWebpackPlugins.push(
+      new HtmlWebpackPlugin({
+        template: path.join(__dirname, `src/${pageName}/index.html`),
+        filename: `${pageName}.html`,
+        chunks: [paheName],
+        inject: true,
+        minify: {
+          html5: true,
+          collapseWhitespace: true,
+          preserveLineBreaks: false,
+          minifyCSS: true,
+          minifyJS: true,
+          removeComments: false
+        }
+      })
+    )
+  })
+
+  return {
+    entry,
+    htmlWebpackPlugins
+  }
+}
+
+const {entry,htmlWebpackPlugins} = setMPA()
+
+module.exports = {
+  entry: entry,
+  plugins: [].concat(htmlWebpackPlugins)
+}
+
+```
+
+### 6.6 使用 sourcemap
+
+可以通过 source map 定位到源代码，开发环境时开启，线上环境关闭，线上排查问题的时候可以将sourcemap上传到错误监控系统。
+
+#### 6.6.1 source map 关键字
+|关键字|描述|
+|:-|:-|
+|eval| 打包时使用eval包裹模块代码,其后会跟着一个url，指定代码对应的文件，即sourcemap内联在js中|
+|source map|产生.map文件，sourcemap 与 js进行了分离|
+|cheap|不包含列信息，报错时只定位到行|
+|inline|将.map作为DataURI嵌入，内联到js中，不单独生成.map文件|
+|module|包含loader的sourcemap|
+
+
+#### 6.6.2 source map 类型
+|devtool|首次构建|二次构建|是否适合生产环境|可以定位的代码|
+|:-|:-|:-|:-|:-|
+|(none)|+++|+++|yes|最终输出的代码|
+|eval|+++|+++|no|webpack生成的代码(一个个的模块)|
+|cheap-eval-source-map|+|++|no|经过loader转换后的代码(只能看到行)|
+|cheap-module-eval-source-map|o|++|no|源代码(只能看到行)|
+|eval-source-map|--|+|no|源代码|
+|cheap-source-map|+|o|yes|经过loader转换后的代码(只能看到行)|
+|cheap-module-source-map|o|-|yes|源代码(只能看到行)|
+|inline-cheap-source-map|+|o|no|经过loader转换后的代码(只能看到行)|
+|inline-cheap-module-source-map|o|-|no|源代码(只能看到行)|
+|source-map|--|--|yes|源代码|
+|inline-source-map|--|--|no|源代码|
+|hidden-source-map|--|--|yes|源代码|
+
+
+使用示例：
+
+```js
+  // webpack.config.js
+  module.exports = {
+    devtool: 'source-map'  // 可以使用source map其他类型
+  }
+```
+
+
+### 6.7 提取页面公共资源
+
+#### 6.7.1 基础库分离
+* 思路： 将 react、react-dom 基础包通过 cdn 引入，不打入 bundle 中
+* 方法： 使用 html-webpack-externals-plugin
+```js
+const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
+
+plugins: [
+  new HtmlWebpackExternalsPlugin({
+    externals:[
+      {
+        module: 'react',
+        entry:'//11/url.cn/now/lib/15.1.0/react-with-addons.min.js?_bid=3123',
+        global:'React'
+      },
+      {
+        module: 'react-dom',
+        entry: '11/url.cn/now/lib/15.1.0/react-dom.min.js?_bid=3123',
+        global:'ReactDOM'
+      }
+    ]
+  })
+]
+```
+
+* 利用 SplitChunksPlugin 进行公共脚本分离
+
+SplitChunksPlugin是 webpack4 内置的，替代 CommonsChunkPlugin 插件
+
+chunks 参数说明：
+  * async ---- 仅对异步引入的库进行分离(默认)
+  * initial ---- 仅对同步引入的库进行分离
+  * all  ---- 所有引入的库进行分离(推荐)
+
+```js
+  module.exports = {
+    optimization: {
+      splitChunks: {
+        chunks: 'async',
+        minSize: 30000,   // 抽离的公共包最小的大小, 字节
+        maxSize: 0,       
+        minChunks: 1,     //  使用的次数，大于1时就会提取
+        maxAsyncRequests: 5,    //
+        maxInitialRequests: 3,   
+        automaticNameDelimiter: '~',
+        name: true,
+        cacheGroups: {
+          vendors: {
+            test: /[\\/]node_modules[\\/]/,
+            priority: -10
+          },
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true
+          }
+        }
+      }
+    }
+  }
+```
 
 <br><hr><br>
 
