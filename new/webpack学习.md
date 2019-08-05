@@ -799,7 +799,7 @@ const setMPA = () => {
       new HtmlWebpackPlugin({
         template: path.join(__dirname, `src/${pageName}/index.html`),
         filename: `${pageName}.html`,
-        chunks: [paheName],
+        chunks: [pageName],
         inject: true,
         minify: {
           html5: true,
@@ -882,12 +882,12 @@ plugins: [
     externals:[
       {
         module: 'react',
-        entry:'//11/url.cn/now/lib/15.1.0/react-with-addons.min.js?_bid=3123',
+        entry:'https://11.url.cn/now/lib/16.2.0/react.min.js',
         global:'React'
       },
       {
         module: 'react-dom',
-        entry: '11/url.cn/now/lib/15.1.0/react-dom.min.js?_bid=3123',
+        entry: 'https://11.url.cn/now/lib/16.2.0/react-dom.min.js',
         global:'ReactDOM'
       }
     ]
@@ -904,33 +904,197 @@ chunks 参数说明：
   * initial ---- 仅对同步引入的库进行分离
   * all  ---- 所有引入的库进行分离(推荐)
 
-```js
-  module.exports = {
+  ```js
+    module.exports = {
     optimization: {
       splitChunks: {
-        chunks: 'async',
-        minSize: 30000,   // 抽离的公共包最小的大小, 字节
-        maxSize: 0,       
-        minChunks: 1,     //  使用的次数，大于1时就会提取
-        maxAsyncRequests: 5,    //
-        maxInitialRequests: 3,   
-        automaticNameDelimiter: '~',
-        name: true,
         cacheGroups: {
-          vendors: {
-            test: /[\\/]node_modules[\\/]/,
-            priority: -10
-          },
-          default: {
-            minChunks: 2,
-            priority: -20,
-            reuseExistingChunk: true
+          commons:{
+            test: /(react|react-dom)/,
+            name: 'vendors',   // 提取出来的react 和 react-dom 混合的文件
+            chunks: 'all'
           }
         }
       }
     }
   }
+
+    // 需要注意的是，需要在 new HtmlWebpackPlugin() 的配置项添加 chunks: ['vendors']
+  ```
+
+* 利用 SplitChunksPlugin 分离页面公共文件
+  * minChunks : 设置最小引用次数为2次
+  * minSize: 分离的包体积的大小
+
+  ```js
+  module.exports = {
+    optimization: {
+      splitChunks: {
+        minSize:0,
+        cacheGroups: {
+          commons:{
+            name: 'commons',   // 
+            chunks: 'all',
+            minChunks:2
+          }
+        }
+      }
+    }
+  }
+  ```
+
+### 6.8 Tree-shaking(摇树优化)
+
+一个模块可能有多个方法，只要其中某个方法使用到了，则整个文件都会被打到bundle里面去，tree shaking就是只把用到的方法打入 bundle，没用到的方法会在uglify阶段被擦除掉。
+
+使用：webpack 4 默认支持，在.babelrc里面设置 modules：false 即可。 production mode的情况下默认开启。
+
+要求： 必须是ES6的语法，且代码没有副作用，CommonJS的方式不支持。
+
+ #### 1. DCE(Dead Code Elimination)
+ 代码不会被执行，不可到达；代码执行的结果不会被用到；代码只会影响死变量(只写不读)
+
+ #### 2. Tree-shaking 原理
+利用ES6模块的特点：
+* import export 只能作为模块顶层的语句出现
+* import 的模块名只能是字符串常量
+* import binding 是 immutable的
+
+代码擦除： 在uglify 阶段删除无用代码
+
+
+
+
+### 6.9 Scope Hoisting
+
+未开启Scope Hoisting之前，构建后的代码存在大量闭包代码，导致体积增大，运行代码时创建的函数作用域变多，消耗更多内存。
+
+#### 1. webpack 的模块机制
+* 打包出来的是一个 IIFE(匿名闭包)
+* modules 是一个数组，每一项是一个模块初始化函数
+* __webpack_require 用来加载模块，返回 module.exports
+* 通过 WEBPACK_REQUIRE_METHOD(0)启动程序
+
+
+#### 2. scope hoisting 原理
+将所有模块的代码按照引用顺序放在一个函数作用域里，适当的重命名一些变量以防止变量名冲突，通过 scope hoisting 可以减少函数声明代码和内存开销。
+
+webpack3中需要如下配置：
+```js
+ plugins: [
+   new webpack.optimize.ModuleConcatenationPlugin()
+ ]
 ```
+
+webpack 4 中 mode 为 production 默认开启。仅支持 ES6，不支持CommonJS.
+
+需要注意的是 scope hoisting 仅对引用一次的代码生效，引用多次的则会被独立的包裹函数所包裹。
+
+
+### 6.10 代码分割和动态import
+
+对于大的web应用，将所有的代码都放在一个文件中(bundle.js)是不够有效的，特别是当某些代码块是在某些特殊的时候才会被用到，webpack有一个公共就是把代码库分割成 chunks，当代码运行到需要他们时再加载。如，先打包出来首屏，当tab切换时，再加载其他组件。
+
+适用的场景如： 1) 抽离相同代码到一个共享块， 2) 脚本懒加载，使得初始下载的代码更小
+
+#### 1. 懒加载 JS 脚本的方式
+
+* CommonJS : `require.ensure`
+* ES6: 动态import（目前还没有原生支持，需要babel转换）
+
+
+#### 2. 使用动态 import
+
+* step1. 安装 babel插件
+```js
+  yarn add @babel/plugin-syntax-dynamic-import 
+```
+
+* step2. 添加配置到 .babelrc 配置文件中
+```js
+  plugins: ["@babel/plugin-syntax-dynamic-import"]
+```
+
+* step3. 使用示例，点击之后懒加载
+```js
+  handleClick = () => {
+    import('./text.js').then(Text => {
+      this.setState({ Text: Text.default})  // 设置加载完的组件
+    })
+  }
+```
+
+
+### 6.11 webpack 和 ESLint 结合
+
+行业里面优秀的 ESLint 规范实践
+* Airbnb: eslint-config-airbnb、 eslint-config-airbnb-base
+* 腾讯： alloyteam的 eslint-config-alloy、 ivweb的 eslint-config-ivweb
+
+
+#### 1. ESLint规范： 基于 eslint-recommand配置改进
+|规范名称|错误级别|说明|
+|:-|:-|:-|
+|for-direction|error|for循环的方向要求必须正确|
+|getter-return|error|getter必须有返回值，进制返回值为undefined，如return;|
+|no-await-in-loop|off|允许在循环里面使用await|
+|no-console|off|允许在代码里面使用console|
+
+#### 2. ESLint 与 CI/CD 集成
+本地开发阶段增加 precommit 钩子
+
+* step1: 安装 husky
+ ```js
+  yarn add husky
+ ```
+
+* step2: 增加 scripts, 通过 lint-staged 增量检查修改的文件
+```js
+  "scripts": {
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "linters":{
+      "*.{js.scss}":["eslint --fix","git add"]
+    }
+  }
+```
+
+#### 3. webpack 与 ESLint 集成
+
+使用 eslint-loader
+
+```js
+// 修改 webpack.config.js
+
+module: {
+  rules: [
+    {
+      test: /.js$/,
+      use: [
+        'babel-loader',
++       'eslint-loader'
+      ]
+    }
+  ]
+}
+
+
+// 创建 .eslintrc.js
+module.exports = {
+  "parser": "babel-eslint",  // 解析器，需要安装
+  "extends": "airbnb",  // 继承 airbnb的配置，多个继承时，使用数组
+  "env": {            // 指定启用的环境
+    "browser": true,
+    "node": true
+  }
+  "rules": {
+      "semi": "error",
+      "indent": ["error",2] // 错误级别为 error，缩进为2
+  }
+}
+```
+
 
 <br><hr><br>
 
