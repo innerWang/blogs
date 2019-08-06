@@ -1095,10 +1095,25 @@ module.exports = {
 }
 ```
 
+`eslint --fix` 脚本可以自动处理空格
+
 
 <br><hr><br>
 
+## 7. 
 
+### 7.1 Git 规范和 Changelog生成
+
+#### 1. Git 提交格式
+* 统一 Git Commit 日志标准
+* 使用 angular的 Git commit 日志作为基本规范
+  * 提交类型限制为： feat(新增feature), fix(修复bug), docs(仅修改了文档), style(仅修改了格式), refactor(代码重构，未增加新功能或修复bug), perf(优化相关，如提升性能，体验), test(测试用例), chore(改变构建流程或者新加依赖库、工具), revert(回滚到上一个版本) 等
+  * 提交信息分为两部分， 标题(首字母不大写，末尾不要标点)，主体内容（即描述信息）
+* 日志提交时友好的类型选择提示，使用 commitize工具
+* 不符合要求格式的日志拒绝提交
+  * 使用 commitlint 工具
+  * 需要同时在客户端、gitlab server hook做
+* 统一 changelog 文档信息生成： 使用 conventional-changelog-cli工具
 
 
 
