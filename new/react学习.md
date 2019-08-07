@@ -726,7 +726,9 @@ React与html的属性差异
 默认是在冒泡阶段触发事件处理函数，若想在捕获阶段触发，则需要使用 `onClickCapture`，而不是 `onClick` 。
 
 
+在React中，处理事件不需要再使用 `addEventListener` 为已创建的DOM元素添加监听器，只需要在元素初始渲染的时候添加监听器就可以。
 
+React支持的事件参考[这里](https://react.docschina.org/docs/events.html#supported-events)，其中包括但不限于 剪贴板事件、鼠标事件、滚轮事件、键盘事件、UI事件、表单事件等。
 
 
 

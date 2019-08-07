@@ -162,7 +162,7 @@ Plugins 作用于整个构建过程。
 | ExtractTextWebpackPlugin | 将CSS文件从bundle.js文件中提取成一个独立的css文件            |
 | CopyWebpackPlugin        | 将文件或者文件夹拷贝到构建的输出目录                         |
 | HtmlWebpackPlugin        | 创建html文件去承载输出的bundle，常用于多页面打包，可自动生成`*.html`文件，而不需要手动去 dist/ 目录中新建一个 `*.html`文件 |
-| UglifyjsWebpackPlugin    | 压缩JS                                                       |
+| UglifyjsWebpackPlugin    | 压缩JS, 目前webpack4 使用 `terser-webpack-plugin`替换`uglifyJS` |
 | ZipWebpackPlugin         | 将打包出的资源生成一个zip包 |
 
 
