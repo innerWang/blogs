@@ -730,8 +730,73 @@ React与html的属性差异
 
 React支持的事件参考[这里](https://react.docschina.org/docs/events.html#supported-events)，其中包括但不限于 剪贴板事件、鼠标事件、滚轮事件、键盘事件、UI事件、表单事件等。
 
+React 中，若是想[阻止事件调用太快或者太多次](https://zh-hans.reactjs.org/docs/faq-functions.html#how-can-i-prevent-a-function-from-being-called-too-quickly-or-too-many-times-in-a-row)，则可以引入节流和防抖。
 
+* 节流阻止事件在指定的时间窗口内只可以调用一次
+```js
+import throttle from 'lodash.throttle';
 
+class LoadMoreButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+    this.handleClickThrottled = throttle(this.handleClick, 1000);
+  }
+
+  componentWillUnmount() {
+    this.handleClickThrottled.cancel(); // 取消延迟回调
+  }
+
+  render() {
+    return <button onClick={this.handleClickThrottled}>Load More</button>;
+  }
+
+  handleClick() {
+    this.props.loadMore();
+  }
+}
+
+```
+
+* 防抖确保函数不会在上一次被调用之后一定量的时间内被执行。当必须进行一些费时的计算来响应快速派发的事件时（比如鼠标滚动或键盘事件时），防抖是非常有用的。
+```js
+import debounce from 'lodash.debounce';
+
+class Searchbox extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.emitChangeDebounced = debounce(this.emitChange, 250);
+  }
+
+  componentWillUnmount() {
+    this.emitChangeDebounced.cancel();
+  }
+
+  render() {
+    return (
+      <input
+        type="text"
+        onChange={this.handleChange}
+        placeholder="Search..."
+        defaultValue={this.props.value}
+      />
+    );
+  }
+
+  handleChange(e) {
+    // React pools events, so we read the value before debounce.
+    // Alternately we could call `event.persist()` and pass the entire event.
+    // For more info see reactjs.org/docs/events.html#event-pooling
+    this.emitChangeDebounced(e.target.value);
+  }
+
+  emitChange(value) {
+    this.props.onChange(value);
+  }
+}
+
+```
 
 
 
