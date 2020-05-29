@@ -1102,6 +1102,62 @@ module.exports = {
 
 `eslint --fix` 脚本可以自动处理空格
 
+### 6.12 webpack 打包库和组件
+
+推荐使用 rollup 来打包基础库和组件，其打包更加简单纯粹
+
+打包的结果需要有压缩版(.js)和非压缩版(.min.js)，且需要支持 ES module，CJS 和 AMD 的语法，可直接通过 script 引入。
+
+如何暴露库？
+
+- webpackConfig.output.library 用于指定库的全局变量
+- webpackConfig.output.libraryTarget 用于指定库所支持的引入方式
+
+```js
+// webpack.config.js
+module.exports = {
+  mode: "none",
+  entry: {
+    "large-number": "./src/index.js",
+    "large-number.min": "./src/index.js"
+  },
+  output: {
+    filename: "[name].js",
+    library: "largeNumber", // 库名
+    libraryTarget: "umd", // 支持AMD CJS ESModule script导入等
+    libraryExport: "default"
+  },
+  optimization: {
+    minimize: true,
+    minimizeer: [
+      new TerserPlugin({
+        include: /\.min\.js$/
+      })
+    ]
+  }
+};
+
+// index.js
+if(process.env.NODE_ENV === 'production'){
+  module.exports = require('./dist/large-number.min.js')
+}else {
+  module.exports = require('./dist/large-number.js')
+}
+
+// package.json 修改main 字段，指定npm包的入口文件，browser环境和node环境均可使用
+{
+  "main": "index.js"
+}
+```
+
+### 6.13 SSR 打包
+
+### 6.14 构建优化
+
+#### 1. 优化构建时命令行显示日志
+
+#### 2. 构建异常和中断处理
+
 <br><hr><br>
 
 ## 7.
